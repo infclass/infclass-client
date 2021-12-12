@@ -102,5 +102,5 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: ddnet-${{ matrix.os }}
+        name: infclass-${{ matrix.os }}
         path: release/artifacts
