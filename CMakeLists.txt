@@ -161,7 +161,7 @@ endif()
 configure_file(src/game/version.h.in ${PROJECT_BINARY_DIR}/src/game/version.h)
 
 set(SERVER_EXECUTABLE DDNet-Server CACHE STRING "Name of the built server executable")
-set(CLIENT_EXECUTABLE DDNet CACHE STRING "Name of the build client executable")
+set(CLIENT_EXECUTABLE Infclass CACHE STRING "Name of the build client executable")
 
 ########################################################################
 # Compiler flags
