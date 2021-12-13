@@ -1911,6 +1911,7 @@ if(CLIENT)
     graphics_threaded.h
     http.cpp
     http.h
+    infclass.h
     input.cpp
     input.h
     keynames.h
