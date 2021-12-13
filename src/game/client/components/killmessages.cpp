@@ -8,6 +8,7 @@
 #include <game/generated/protocol.h>
 
 #include "killmessages.h"
+#include <game/damage_type.h>
 #include <game/client/animstate.h>
 #include <game/client/gameclient.h>
 
@@ -36,6 +37,7 @@ void CKillMessages::OnInit()
 {
 	Graphics()->SetColor(1.f, 1.f, 1.f, 1.f);
 	m_SpriteQuadContainerIndex = Graphics()->CreateQuadContainer(false);
+	m_InfWeaponOffset = 0;
 
 	Graphics()->QuadsSetSubset(0, 0, 1, 1);
 	RenderTools()->QuadContainerAddSprite(m_SpriteQuadContainerIndex, 0.f, 0.f, 28.f, 56.f);
@@ -46,6 +48,7 @@ void CKillMessages::OnInit()
 	RenderTools()->QuadContainerAddSprite(m_SpriteQuadContainerIndex, 0.f, 0.f, 28.f, 56.f);
 	Graphics()->QuadsSetSubset(1, 0, 0, 1);
 	RenderTools()->QuadContainerAddSprite(m_SpriteQuadContainerIndex, 0.f, 0.f, 28.f, 56.f);
+	m_InfWeaponOffset = 4;
 
 	for(int i = 0; i < NUM_WEAPONS; ++i)
 	{
@@ -54,6 +57,24 @@ void CKillMessages::OnInit()
 		RenderTools()->GetSpriteScale(g_pData->m_Weapons.m_aId[i].m_pSpriteBody, ScaleX, ScaleY);
 		RenderTools()->QuadContainerAddSprite(m_SpriteQuadContainerIndex, 96.f * ScaleX, 96.f * ScaleY);
 	}
+	m_InfWeaponOffset += NUM_WEAPONS;
+
+	for(int i = 0; i < static_cast<int>(DAMAGE_TYPE::COUNT); ++i)
+	{
+		DAMAGE_TYPE DamageType = static_cast<DAMAGE_TYPE>(i);
+		float ScaleX = 0;
+		float ScaleY = 0;
+		Graphics()->QuadsSetSubset(0, 0, 1, 1);
+
+		int SpriteIndex = GameClient()->GetInfclassSpriteForDamageType(DamageType);
+		if(SpriteIndex >= 0)
+		{
+			RenderTools()->GetSpriteScale(&g_pData->m_aSprites[SpriteIndex], ScaleX, ScaleY);
+		}
+
+		RenderTools()->QuadContainerAddSprite(m_SpriteQuadContainerIndex, 96.f * ScaleX, 96.f * ScaleY);
+	}
+
 	Graphics()->QuadContainerUpload(m_SpriteQuadContainerIndex);
 }
 
@@ -102,6 +123,69 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 {
 	if(m_pClient->m_SuppressEvents)
 		return;
+
+	if(MsgType == NETMSGTYPE_INF_KILLMSG)
+	{
+		CNetMsg_Inf_KillMsg *pMsg = (CNetMsg_Inf_KillMsg *)pRawMsg;
+
+		dbg_msg("inf-proto", "Received kill message victim=%d, damage_type=%d, killer=%d, assistant=%d", pMsg->m_Victim, pMsg->m_InfDamageType, pMsg->m_Killer, pMsg->m_Assistant);
+
+		// unpack messages
+		CKillMsg Kill;
+		Kill.m_aVictimName[0] = '\0';
+		Kill.m_aKillerName[0] = '\0';
+
+		Kill.m_VictimID = pMsg->m_Victim;
+		if(Kill.m_VictimID >= 0 && Kill.m_VictimID < MAX_CLIENTS)
+		{
+			Kill.m_VictimTeam = m_pClient->m_aClients[Kill.m_VictimID].m_Team;
+			Kill.m_VictimDDTeam = m_pClient->m_Teams.Team(Kill.m_VictimID);
+			str_copy(Kill.m_aVictimName, m_pClient->m_aClients[Kill.m_VictimID].m_aName);
+			Kill.m_VictimRenderInfo = m_pClient->m_aClients[Kill.m_VictimID].m_RenderInfo;
+		}
+
+		Kill.m_KillerID = pMsg->m_Killer;
+		if(Kill.m_KillerID >= 0 && Kill.m_KillerID < MAX_CLIENTS)
+		{
+			Kill.m_KillerTeam = m_pClient->m_aClients[Kill.m_KillerID].m_Team;
+			str_copy(Kill.m_aKillerName, m_pClient->m_aClients[Kill.m_KillerID].m_aName);
+			Kill.m_KillerRenderInfo = m_pClient->m_aClients[Kill.m_KillerID].m_RenderInfo;
+		}
+
+		Kill.m_InfDamageType = pMsg->m_InfDamageType;
+		Kill.m_Weapon = pMsg->m_Weapon;
+		Kill.m_ModeSpecial = 0;
+		Kill.m_Tick = Client()->GameTick(g_Config.m_ClDummy);
+
+		Kill.m_FlagCarrierBlue = m_pClient->m_Snap.m_pGameDataObj ? m_pClient->m_Snap.m_pGameDataObj->m_FlagCarrierBlue : -1;
+
+		Kill.m_VitctimTextWidth = Kill.m_KillerTextWidth = 0.f;
+
+		float Width = 400 * 3.0f * Graphics()->ScreenAspect();
+		float Height = 400 * 3.0f;
+
+		float ScreenX0, ScreenY0, ScreenX1, ScreenY1;
+		Graphics()->GetScreen(&ScreenX0, &ScreenY0, &ScreenX1, &ScreenY1);
+		Graphics()->MapScreen(0, 0, Width * 1.5f, Height * 1.5f);
+
+		CreateKillmessageNamesIfNotCreated(Kill);
+
+		bool KillMsgValid = (Kill.m_VictimRenderInfo.m_CustomColoredSkin && Kill.m_VictimRenderInfo.m_ColorableRenderSkin.m_Body.IsValid()) || (!Kill.m_VictimRenderInfo.m_CustomColoredSkin && Kill.m_VictimRenderInfo.m_OriginalRenderSkin.m_Body.IsValid());
+		// if killer != victim, killer must be valid too
+		KillMsgValid &= Kill.m_KillerID == Kill.m_VictimID || ((Kill.m_KillerRenderInfo.m_CustomColoredSkin && Kill.m_KillerRenderInfo.m_ColorableRenderSkin.m_Body.IsValid()) || (!Kill.m_KillerRenderInfo.m_CustomColoredSkin && Kill.m_KillerRenderInfo.m_OriginalRenderSkin.m_Body.IsValid()));
+		if(KillMsgValid)
+		{
+			// add the message
+			m_KillmsgCurrent = (m_KillmsgCurrent + 1) % MAX_KILLMSGS;
+
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
+
+			m_aKillmsgs[m_KillmsgCurrent] = Kill;
+		}
+
+		Graphics()->MapScreen(ScreenX0, ScreenY0, ScreenX1, ScreenY1);
+	}
 
 	if(MsgType == NETMSGTYPE_SV_KILLMSG)
 	{
@@ -238,7 +322,21 @@ void CKillMessages::OnRender()
 
 		// render weapon
 		x -= 44.0f;
-		if(m_aKillmsgs[r].m_Weapon >= 0)
+		int VanillaWeapon = m_aKillmsgs[r].m_Weapon;
+		if(m_aKillmsgs[r].m_InfDamageType >= 0)
+		{
+			int Index = m_aKillmsgs[r].m_InfDamageType;
+			DAMAGE_TYPE DamageType = static_cast<DAMAGE_TYPE>(m_aKillmsgs[r].m_InfDamageType);
+			IGraphics::CTextureHandle DamageTypeTexture = GameClient()->GetInfclassTextureForDamageType(DamageType);
+			if(DamageTypeTexture.IsValid())
+			{
+				Graphics()->TextureSet(DamageTypeTexture);
+				Graphics()->RenderQuadContainerAsSprite(m_SpriteQuadContainerIndex, m_InfWeaponOffset + Index, x, y + 20);
+				VanillaWeapon = -1;
+			}
+		}
+
+		if(VanillaWeapon >= 0)
 		{
 			Graphics()->TextureSet(GameClient()->m_GameSkin.m_aSpriteWeapons[m_aKillmsgs[r].m_Weapon]);
 			Graphics()->RenderQuadContainerAsSprite(m_SpriteQuadContainerIndex, 4 + m_aKillmsgs[r].m_Weapon, x, y + 28);

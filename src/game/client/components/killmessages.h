@@ -9,6 +9,7 @@
 class CKillMessages : public CComponent
 {
 	int m_SpriteQuadContainerIndex;
+	int m_InfWeaponOffset;
 
 public:
 	// kill messages
@@ -19,6 +20,7 @@ public:
 			m_KillerTextContainerIndex = m_VictimTextContainerIndex = -1;
 		}
 
+		int m_InfDamageType = -1;
 		int m_Weapon;
 
 		int m_VictimID;
