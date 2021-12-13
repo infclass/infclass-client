@@ -17,6 +17,8 @@
 #include <engine/textrender.h>
 #include <engine/updater.h>
 
+#include <engine/client/infclass.h>
+
 #include <game/generated/client_data.h>
 #include <game/generated/client_data7.h>
 #include <game/generated/protocol.h>
@@ -1597,6 +1599,10 @@ void CGameClient::OnNewSnapshot()
 		Msg.AddInt(CLIENT_VERSIONNR);
 		Client()->SendMsgY(&Msg, MSGFLAG_VITAL, 0);
 		m_DDRaceMsgSent[0] = true;
+
+		CMsgPacker MsgVerInfclass(NETMSG_CLIENTVER_INFCLASS, true);
+		MsgVerInfclass.AddInt(INFCLASS_CLIENT_VERSION);
+		Client()->SendMsgY(&MsgVerInfclass, MSGFLAG_VITAL, 0);
 	}
 
 	if(!m_DDRaceMsgSent[1] && m_Snap.m_pLocalInfo && Client()->DummyConnected())
@@ -1605,6 +1611,10 @@ void CGameClient::OnNewSnapshot()
 		Msg.AddInt(CLIENT_VERSIONNR);
 		Client()->SendMsgY(&Msg, MSGFLAG_VITAL, 1);
 		m_DDRaceMsgSent[1] = true;
+
+		CMsgPacker MsgVerInfclass(NETMSG_CLIENTVER_INFCLASS, true);
+		MsgVerInfclass.AddInt(INFCLASS_CLIENT_VERSION);
+		Client()->SendMsgY(&MsgVerInfclass, MSGFLAG_VITAL, 1);
 	}
 
 	if(m_ShowOthers[g_Config.m_ClDummy] == -1 || (m_ShowOthers[g_Config.m_ClDummy] != -1 && m_ShowOthers[g_Config.m_ClDummy] != g_Config.m_ClShowOthers))
