@@ -35,6 +35,8 @@
 #include <engine/storage.h>
 #include <engine/textrender.h>
 
+#include <engine/client/infclass.h>
+
 #include <engine/client/notifications.h>
 #include <engine/shared/assertion_logger.h>
 #include <engine/shared/compression.h>
@@ -461,6 +463,10 @@ void CClient::SendInfo()
 	MsgVer.AddInt(GameClient()->DDNetVersion());
 	MsgVer.AddString(GameClient()->DDNetVersionStr(), 0);
 	SendMsg(CONN_MAIN, &MsgVer, MSGFLAG_VITAL);
+
+	CMsgPacker MsgVerInfclass(NETMSG_CLIENTVER_INFCLASS, true);
+	MsgVerInfclass.AddInt(INFCLASS_CLIENT_VERSION);
+	SendMsg(CONN_MAIN, &MsgVerInfclass, MSGFLAG_VITAL);
 
 	CMsgPacker Msg(NETMSG_INFO, true);
 	Msg.AddString(GameClient()->NetVersion(), 128);
@@ -3139,6 +3145,10 @@ void CClient::Run()
 			MsgVer.AddInt(GameClient()->DDNetVersion());
 			MsgVer.AddString(GameClient()->DDNetVersionStr(), 0);
 			SendMsg(CONN_DUMMY, &MsgVer, MSGFLAG_VITAL);
+
+			CMsgPacker MsgVerInfclass(NETMSG_CLIENTVER_INFCLASS, true);
+			MsgVerInfclass.AddInt(INFCLASS_CLIENT_VERSION);
+			SendMsg(CONN_DUMMY, &MsgVerInfclass, MSGFLAG_VITAL);
 
 			CMsgPacker MsgInfo(NETMSG_INFO, true);
 			MsgInfo.AddString(GameClient()->NetVersion(), 128);
