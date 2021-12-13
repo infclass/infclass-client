@@ -1833,6 +1833,7 @@ set_src(GAME_SHARED GLOB src/game
   bezier.h
   collision.cpp
   collision.h
+  damage_type.h
   ddracechat.h
   ddracecommands.h
   gamecore.cpp
