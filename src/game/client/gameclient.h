@@ -526,6 +526,7 @@ public:
 	bool IsDisplayingWarning();
 
 	void LoadGameSkin(const char *pPath, bool AsDir = false);
+	void LoadInfclassSkin(const char *pPath, bool AsDir = false);
 	void LoadEmoticonsSkin(const char *pPath, bool AsDir = false);
 	void LoadParticlesSkin(const char *pPath, bool AsDir = false);
 
@@ -614,6 +615,13 @@ public:
 
 	SClientGameSkin m_GameSkin;
 	bool m_GameSkinLoaded;
+
+	struct SClientInfclassSkin
+	{
+	};
+
+	SClientInfclassSkin m_InfclassSkin;
+	bool m_InfclassSkinLoaded;
 
 	struct SClientParticlesSkin
 	{
