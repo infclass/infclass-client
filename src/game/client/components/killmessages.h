@@ -9,6 +9,7 @@
 class CKillMessages : public CComponent
 {
 	int m_SpriteQuadContainerIndex;
+	int m_InfWeaponOffset;
 
 public:
 	// kill messages
@@ -19,6 +20,7 @@ public:
 			m_KillerTextContainerIndex = m_VictimTextContainerIndex = -1;
 		}
 
+		int m_InfDamageType = -1;
 		int m_Weapon;
 
 		int m_VictimID;
@@ -35,6 +37,15 @@ public:
 		int m_KillerTextContainerIndex;
 		float m_KillerTextWidth;
 		CTeeRenderInfo m_KillerRenderInfo;
+
+		int m_AssistantID = -1;
+		char m_aAssistantName[64];
+		int m_AssistantTextContainerIndex = -1;
+		float m_AssistantTextWidth;
+		CTeeRenderInfo m_AssistantRenderInfo;
+
+		int m_AssistantPlusContainerIndex = -1;
+		float m_AssistantPlusWidth;
 
 		int m_ModeSpecial; // for CTF, if the guy is carrying a flag for example
 		int m_Tick;
