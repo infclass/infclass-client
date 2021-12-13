@@ -3394,12 +3394,12 @@ IGraphics::CTextureHandle *CGameClient::GetInfclassTexturePtrForDamageType(DAMAG
 {
 	switch(DamageType)
 	{
-	case DAMAGE_TYPE::SNIPER_RIFLE:
-		return &m_InfclassSkin.m_SpriteSniperRifle;
-	case DAMAGE_TYPE::SCIENTIST_LASER:
-		return &m_InfclassSkin.m_SpriteScientistLaser;
-	case DAMAGE_TYPE::MEDIC_SHOTGUN:
-		return &m_InfclassSkin.m_SpriteMedicShotgun;
+//	case DAMAGE_TYPE::SNIPER_RIFLE:
+//		return &m_InfclassSkin.m_SpriteSniperRifle;
+//	case DAMAGE_TYPE::SCIENTIST_LASER:
+//		return &m_InfclassSkin.m_SpriteScientistLaser;
+//	case DAMAGE_TYPE::MEDIC_SHOTGUN:
+//		return &m_InfclassSkin.m_SpriteMedicShotgun;
 
 	case DAMAGE_TYPE::LASER_WALL:
 		return &m_InfclassSkin.m_SpriteLaserWall;
@@ -3407,16 +3407,16 @@ IGraphics::CTextureHandle *CGameClient::GetInfclassTexturePtrForDamageType(DAMAG
 		return &m_InfclassSkin.m_SpriteSoldierBomb;
 	case DAMAGE_TYPE::SCIENTIST_MINE:
 		return &m_InfclassSkin.m_SpriteScientistMine;
-	case DAMAGE_TYPE::BIOLOGIST_MINE:
-		return &m_InfclassSkin.m_SpriteBiologistMine;
+//	case DAMAGE_TYPE::BIOLOGIST_MINE:
+//		return &m_InfclassSkin.m_SpriteBiologistMine;
 	case DAMAGE_TYPE::MERCENARY_BOMB:
 		return &m_InfclassSkin.m_SpriteMercenaryBomb;
-	case DAMAGE_TYPE::WHITE_HOLE:
-		return &m_InfclassSkin.m_SpriteWhiteHole;
-	case DAMAGE_TYPE::TURRET_DESTRUCTION:
-		return &m_InfclassSkin.m_SpriteTurretDestruction;
-	case DAMAGE_TYPE::TURRET_LASER:
-		return &m_InfclassSkin.m_SpriteTurretLaser;
+//	case DAMAGE_TYPE::WHITE_HOLE:
+//		return &m_InfclassSkin.m_SpriteWhiteHole;
+//	case DAMAGE_TYPE::TURRET_DESTRUCTION:
+//		return &m_InfclassSkin.m_SpriteTurretDestruction;
+//	case DAMAGE_TYPE::TURRET_LASER:
+//		return &m_InfclassSkin.m_SpriteTurretLaser;
 
 	case DAMAGE_TYPE::BOOMER_EXPLOSION:
 		return &m_InfclassSkin.m_SpriteBoomerExplosion;
