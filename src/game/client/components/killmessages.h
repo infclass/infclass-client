@@ -18,6 +18,10 @@ public:
 		CKillMsg()
 		{
 			m_KillerTextContainerIndex = m_VictimTextContainerIndex = -1;
+
+			m_aVictimName[0] = '\0';
+			m_aKillerName[0] = '\0';
+			m_aAssistantName[0] = '\0';
 		}
 
 		int m_InfDamageType = -1;
