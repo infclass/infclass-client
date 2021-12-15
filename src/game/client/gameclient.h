@@ -335,6 +335,9 @@ public:
 		int m_ColorBody;
 		int m_ColorFeet;
 
+		int m_InfClassPlayerFlags;
+		int m_InfClassPlayerClass;
+
 		char m_aName[MAX_NAME_LENGTH];
 		char m_aClan[MAX_CLAN_LENGTH];
 		int m_Country;
@@ -752,6 +755,7 @@ private:
 	void UpdateRenderedCharacters();
 	void DetectStrongHook();
 	vec2 GetSmoothPos(int ClientID);
+	void ProcessInfClassPlayerInfo(int ClientID, const CNetObj_InfClassPlayer *pPlayerData);
 
 	int m_PredictedDummyID;
 	int m_IsDummySwapping;
