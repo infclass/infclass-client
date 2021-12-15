@@ -18,6 +18,8 @@ void CKillMessages::OnWindowResize()
 	{
 		TextRender()->DeleteTextContainer(Killmsg.m_VictimTextContainerIndex);
 		TextRender()->DeleteTextContainer(Killmsg.m_KillerTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantPlusContainerIndex);
 	}
 }
 
@@ -30,6 +32,8 @@ void CKillMessages::OnReset()
 
 		TextRender()->DeleteTextContainer(Killmsg.m_VictimTextContainerIndex);
 		TextRender()->DeleteTextContainer(Killmsg.m_KillerTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantPlusContainerIndex);
 	}
 }
 
@@ -116,6 +120,38 @@ void CKillMessages::CreateKillmessageNamesIfNotCreated(CKillMsg &Kill)
 
 		TextRender()->CreateTextContainer(Kill.m_KillerTextContainerIndex, &Cursor, Kill.m_aKillerName);
 	}
+
+	if(Kill.m_AssistantTextContainerIndex == -1 && Kill.m_aAssistantName[0] != 0)
+	{
+		{
+			Kill.m_AssistantTextWidth = TextRender()->TextWidth(0, FontSize, Kill.m_aAssistantName, -1, -1.0f);
+
+			CTextCursor Cursor;
+			TextRender()->SetCursor(&Cursor, 0, 0, FontSize, TEXTFLAG_RENDER);
+			Cursor.m_LineWidth = -1;
+
+			unsigned Color = g_Config.m_ClKillMessageNormalColor;
+			TextRender()->TextColor(color_cast<ColorRGBA>(ColorHSLA(Color)));
+
+			TextRender()->CreateTextContainer(Kill.m_AssistantTextContainerIndex, &Cursor, Kill.m_aAssistantName);
+		}
+
+		{
+			// plus
+			const char aPlus[] = "+";
+			Kill.m_AssistantPlusWidth = TextRender()->TextWidth(0, FontSize, aPlus, -1, -1.0f);
+
+			CTextCursor Cursor;
+			TextRender()->SetCursor(&Cursor, 0, 0, FontSize, TEXTFLAG_RENDER);
+			Cursor.m_LineWidth = -1;
+
+			static const ColorRGBA PlusColor{0.8f, 0.8f, 0.8f, 1.0f};
+			TextRender()->TextColor(PlusColor);
+
+			TextRender()->CreateTextContainer(Kill.m_AssistantPlusContainerIndex, &Cursor, aPlus);
+		}
+	}
+
 	TextRender()->TextColor(TextRender()->DefaultTextColor());
 }
 
@@ -131,6 +167,7 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 		CKillMsg Kill;
 		Kill.m_aVictimName[0] = '\0';
 		Kill.m_aKillerName[0] = '\0';
+		Kill.m_aAssistantName[0] = '\0';
 
 		Kill.m_VictimID = pMsg->m_Victim;
 		if(Kill.m_VictimID >= 0 && Kill.m_VictimID < MAX_CLIENTS)
@@ -184,25 +221,10 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 			// add the message
 			m_KillmsgCurrent = (m_KillmsgCurrent + 1) % MAX_KILLMSGS;
 
-			if(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex != -1)
-			{
-				TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
-				m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex = -1;
-			}
-
-			if(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex != -1)
-			{
-				TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
-				m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex = -1;
-			}
-
-			if(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex != -1)
-			{
-				TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex);
-				TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex);
-				m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex = -1;
-				m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex = -1;
-			}
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex);
 
 			m_aKillmsgs[m_KillmsgCurrent] = Kill;
 		}
@@ -218,6 +240,7 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 		CKillMsg Kill;
 		Kill.m_aVictimName[0] = '\0';
 		Kill.m_aKillerName[0] = '\0';
+		Kill.m_aAssistantName[0] = '\0';
 
 		Kill.m_VictimID = pMsg->m_Victim;
 		if(Kill.m_VictimID >= 0 && Kill.m_VictimID < MAX_CLIENTS)
@@ -263,6 +286,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex);
 
 			m_aKillmsgs[m_KillmsgCurrent] = Kill;
 		}
@@ -385,6 +410,21 @@ void CKillMessages::OnRender()
 				}
 			}
 
+			if(m_aKillmsgs[r].m_AssistantID >= 0)
+			{
+				// render assistant tee
+				x -= 24.0f;
+
+				CTeeRenderInfo TeeInfo = m_aKillmsgs[r].m_AssistantRenderInfo;
+
+				CAnimState *pIdleState = CAnimState::GetIdle();
+				vec2 OffsetToMid;
+				RenderTools()->GetRenderTeeOffsetToRenderedTee(pIdleState, &TeeInfo, OffsetToMid);
+				vec2 TeeRenderPos(x, y + 46.0f / 2.0f + OffsetToMid.y);
+
+				RenderTools()->RenderTee(pIdleState, &TeeInfo, EMOTE_ANGRY, vec2(1, 0), TeeRenderPos);
+			}
+
 			// render killer tee
 			x -= 24.0f;
 
@@ -401,6 +441,22 @@ void CKillMessages::OnRender()
 			}
 
 			x -= 32.0f;
+
+			if(m_aKillmsgs[r].m_AssistantID >= 0)
+			{
+				// render assistant name
+				x -= m_aKillmsgs[r].m_AssistantTextWidth;
+
+				if(m_aKillmsgs[r].m_AssistantTextContainerIndex != -1)
+				{
+					TextRender()->RenderTextContainer(m_aKillmsgs[r].m_AssistantTextContainerIndex, TColor, TOutlineColor, x, y + (46.f - 36.f) / 2.f);
+
+					ColorRGBA Color = color_cast<ColorRGBA>(ColorHSLA(g_Config.m_ClKillMessageHighlightColor));
+
+					x -= m_aKillmsgs[r].m_AssistantPlusWidth;
+					TextRender()->RenderTextContainer(m_aKillmsgs[r].m_AssistantPlusContainerIndex, Color, TOutlineColor, x, y + (46.f - 36.f) / 2.f);
+				}
+			}
 
 			// render killer name
 			x -= m_aKillmsgs[r].m_KillerTextWidth;
