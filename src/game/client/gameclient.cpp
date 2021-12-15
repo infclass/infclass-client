@@ -1297,6 +1297,16 @@ void CGameClient::OnNewSnapshot()
 					}
 				}
 			}
+			else if(Item.m_Type == NETOBJTYPE_INFCLASSPLAYER)
+			{
+				const CNetObj_InfClassPlayer *pPlayerData = (const CNetObj_InfClassPlayer *)pData;
+
+				if(Item.m_ID < MAX_CLIENTS)
+				{
+					CClientData *pClient = &m_aClients[Item.m_ID];
+					ProcessInfClassPlayerInfo(pClient, pPlayerData);
+				}
+			}
 			else if(Item.m_Type == NETOBJTYPE_DDNETCHARACTER)
 			{
 				const CNetObj_DDNetCharacter *pCharacterData = (const CNetObj_DDNetCharacter *)pData;
@@ -2003,6 +2013,9 @@ void CGameClient::CClientData::Reset()
 	m_SkinInfo.m_ColorFeet = ColorRGBA(1, 1, 1);
 	m_SkinInfo.m_SkinMetrics.Reset();
 
+	m_InfClassPlayerFlags = 0;
+	m_InfClassPlayerClass = -1;
+
 	m_Solo = false;
 	m_Jetpack = false;
 	m_NoCollision = false;
@@ -2594,6 +2607,12 @@ vec2 CGameClient::GetSmoothPos(int ClientID)
 		}
 	}
 	return Pos;
+}
+
+void CGameClient::ProcessInfClassPlayerInfo(CClientData *pClient, const CNetObj_InfClassPlayer *pPlayerData)
+{
+	pClient->m_InfClassPlayerFlags = pPlayerData->m_Flags;
+	pClient->m_InfClassPlayerClass = pPlayerData->m_Class;
 }
 
 void CGameClient::Echo(const char *pString)
