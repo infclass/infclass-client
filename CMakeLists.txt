@@ -1422,6 +1422,7 @@ set(EXPECTED_DATA
   skins/greyfox_2.png
   skins/hammie-chew.png
   skins/hammie-whis.png
+  skins/inf_ninja.png
   skins/jeet.png
   skins/kintaro_2.png
   skins/kitty_bluestripe.png
@@ -1765,6 +1766,7 @@ set_src(ENGINE_SHARED GLOB_RECURSE src/engine/shared
 set_src(GAME_SHARED GLOB src/game
   bezier.cpp
   bezier.h
+  classes.h
   collision.cpp
   collision.h
   damage_type.h
