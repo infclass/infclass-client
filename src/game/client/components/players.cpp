@@ -281,7 +281,15 @@ void CPlayers::RenderHook(
 		float d = distance(Pos, HookPos);
 		vec2 Dir = normalize(Pos - HookPos);
 
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookHead);
+		bool InfectedHook = pRenderInfo->m_InfectedHook;
+		if(InfectedHook)
+		{
+			Graphics()->TextureSet(GameClient()->m_InfclassSkin.m_SpriteHookHead);
+		}
+		else
+		{
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookHead);
+		}
 		Graphics()->QuadsSetRotation(angle(Dir) + pi);
 		// render head
 		int QuadOffset = NUM_WEAPONS * 2 + 2;
@@ -301,7 +309,14 @@ void CPlayers::RenderHook(
 			s_HookChainRenderInfo[HookChainCount].m_Scale = 1;
 			s_HookChainRenderInfo[HookChainCount].m_Rotation = angle(Dir) + pi;
 		}
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookChain);
+		if(InfectedHook)
+		{
+			Graphics()->TextureSet(GameClient()->m_InfclassSkin.m_SpriteHookChain);
+		}
+		else
+		{
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookChain);
+		}
 		Graphics()->RenderQuadContainerAsSpriteMultiple(m_WeaponEmoteQuadContainerIndex, QuadOffset, HookChainCount, s_HookChainRenderInfo);
 
 		Graphics()->QuadsSetRotation(0);
@@ -707,8 +722,10 @@ void CPlayers::OnRender()
 		IsTeamplay = (m_pClient->m_Snap.m_pGameInfoObj->m_GameFlags & GAMEFLAG_TEAMS) != 0;
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
+		const CGameClient::CClientData *pClientData = &m_pClient->m_aClients[i];
 		m_aRenderInfo[i] = m_pClient->m_aClients[i].m_RenderInfo;
 		m_aRenderInfo[i].m_ShineDecoration = m_pClient->m_aClients[i].m_LiveFrozen;
+		m_aRenderInfo[i].m_InfectedHook = pClientData->m_InfClassPlayerFlags & INFCLASS_PLAYER_FLAG_INFECTED;
 		if(m_pClient->m_Snap.m_aCharacters[i].m_Cur.m_Weapon == WEAPON_NINJA && g_Config.m_ClShowNinja)
 		{
 			// change the skin for the player to the ninja
@@ -735,6 +752,7 @@ void CPlayers::OnRender()
 	m_RenderInfoSpec.m_ColorableRenderSkin = pSkin->m_ColorableSkin;
 	m_RenderInfoSpec.m_BloodColor = pSkin->m_BloodColor;
 	m_RenderInfoSpec.m_SkinMetrics = pSkin->m_Metrics;
+	m_RenderInfoSpec.m_InfectedHook = false;
 	m_RenderInfoSpec.m_CustomColoredSkin = false;
 	m_RenderInfoSpec.m_Size = 64.0f;
 	int LocalClientID = m_pClient->m_Snap.m_LocalClientID;
