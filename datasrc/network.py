@@ -36,6 +36,8 @@ ProjectileFlags = [f"CLIENTID_BIT{i}" for i in range(8)] + [
 
 LaserTypes = ["RIFLE", "SHOTGUN", "DOOR", "FREEZE"]
 
+InfClassPlayerFlags = ["INFECTED"]
+
 Emoticons = ["OOP", "EXCLAMATION", "HEARTS", "DROP", "DOTDOT", "MUSIC", "SORRY", "GHOST", "SUSHI", "SPLATTEE", "DEVILTEE", "ZOMG", "ZZZ", "WTF", "EYES", "QUESTION"]
 
 Powerups = ["HEALTH", "ARMOR", "WEAPON", "NINJA", "ARMOR_SHOTGUN", "ARMOR_GRENADE", "ARMOR_NINJA", "ARMOR_LASER"]
@@ -92,6 +94,7 @@ Flags = [
 	Flags("GAMEINFOFLAG2", GameInfoFlags2),
 	Flags("EXPLAYERFLAG", ExPlayerFlags),
 	Flags("PROJECTILEFLAG", ProjectileFlags),
+	Flags("INFCLASS_PLAYER_FLAG", InfClassPlayerFlags),
 ]
 
 Objects = [
@@ -235,6 +238,11 @@ Objects = [
 
 	NetObjectEx("MyOwnObject", "my-own-object@heinrich5991.de", [
 		NetIntAny("m_Test"),
+	]),
+
+	NetObjectEx("InfClassPlayer", "player@infclass", [
+		NetIntAny("m_Flags"),
+		NetIntRange("m_Class", -1, 255),
 	]),
 
 	NetObjectEx("DDNetCharacter", "character@netobj.ddnet.tw", [
