@@ -350,6 +350,11 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 	if(MsgType == NETMSGTYPE_SV_KILLMSG)
 	{
 		CNetMsg_Sv_KillMsg *pMsg = (CNetMsg_Sv_KillMsg *)pRawMsg;
+		const int InfClassModeSpecialSkip = 0x100;
+		if(pMsg->m_ModeSpecial == InfClassModeSpecialSkip)
+		{
+			return;
+		}
 
 		CKillMsg Kill{};
 
