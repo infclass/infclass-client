@@ -313,7 +313,15 @@ void CPlayers::RenderHook(
 		float d = distance(Pos, HookPos);
 		vec2 Dir = normalize(Pos - HookPos);
 
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookHead);
+		bool InfectedHook = pRenderInfo->m_InfectedHook;
+		if(InfectedHook)
+		{
+			Graphics()->TextureSet(GameClient()->m_InfclassSkin.m_SpriteHookHead);
+		}
+		else
+		{
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookHead);
+		}
 		Graphics()->QuadsSetRotation(angle(Dir) + pi);
 		// render head
 		int QuadOffset = NUM_WEAPONS * 2 + 2;
@@ -332,7 +340,14 @@ void CPlayers::RenderHook(
 			s_aHookChainRenderInfo[HookChainCount].m_Scale = 1;
 			s_aHookChainRenderInfo[HookChainCount].m_Rotation = angle(Dir) + pi;
 		}
-		Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookChain);
+		if(InfectedHook)
+		{
+			Graphics()->TextureSet(GameClient()->m_InfclassSkin.m_SpriteHookChain);
+		}
+		else
+		{
+			Graphics()->TextureSet(GameClient()->m_GameSkin.m_SpriteHookChain);
+		}
 		Graphics()->RenderQuadContainerAsSpriteMultiple(m_WeaponEmoteQuadContainerIndex, QuadOffset, HookChainCount, s_aHookChainRenderInfo);
 
 		Graphics()->QuadsSetRotation(0);
@@ -771,6 +786,8 @@ void CPlayers::OnRender()
 			aRenderInfo[i].m_TeeRenderFlags |= TEE_EFFECT_FROZEN | TEE_NO_WEAPON;
 		if(m_pClient->m_aClients[i].m_LiveFrozen)
 			aRenderInfo[i].m_TeeRenderFlags |= TEE_EFFECT_FROZEN;
+		const CGameClient::CClientData *pClientData = &m_pClient->m_aClients[i];
+		aRenderInfo[i].m_InfectedHook = pClientData->m_InfClassPlayerFlags & INFCLASS_PLAYER_FLAG_INFECTED;
 
 		const CGameClient::CSnapState::CCharacterInfo &CharacterInfo = m_pClient->m_Snap.m_aCharacters[i];
 		const bool Frozen = CharacterInfo.m_HasExtendedData && CharacterInfo.m_ExtendedData.m_FreezeEnd != 0;
@@ -799,6 +816,7 @@ void CPlayers::OnRender()
 	RenderInfoSpec.m_ColorableRenderSkin = pSkin->m_ColorableSkin;
 	RenderInfoSpec.m_BloodColor = pSkin->m_BloodColor;
 	RenderInfoSpec.m_SkinMetrics = pSkin->m_Metrics;
+	RenderInfoSpec.m_InfectedHook = false;
 	RenderInfoSpec.m_CustomColoredSkin = false;
 	RenderInfoSpec.m_Size = 64.0f;
 	const int LocalClientId = m_pClient->m_Snap.m_LocalClientId;
