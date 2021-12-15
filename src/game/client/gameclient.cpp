@@ -3520,6 +3520,9 @@ void CGameClient::LoadInfclassSkin(const char *pPath, bool AsDir)
 			}
 		}
 
+		Graphics()->UnloadTexture(&m_InfclassSkin.m_SpriteHookChain);
+		Graphics()->UnloadTexture(&m_InfclassSkin.m_SpriteHookHead);
+
 		m_InfclassSkinLoaded = false;
 	}
 
@@ -3562,6 +3565,9 @@ void CGameClient::LoadInfclassSkin(const char *pPath, bool AsDir)
 				}
 			}
 		}
+
+		m_InfclassSkin.m_SpriteHookChain = Graphics()->LoadSpriteTexture(ImgInfo, &g_pData->m_aSprites[SPRITE_INF_HOOK_CHAIN]);
+		m_InfclassSkin.m_SpriteHookHead = Graphics()->LoadSpriteTexture(ImgInfo, &g_pData->m_aSprites[SPRITE_INF_HOOK_HEAD]);
 
 		m_InfclassSkinLoaded = true;
 
