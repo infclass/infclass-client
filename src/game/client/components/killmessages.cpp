@@ -124,6 +124,38 @@ void CKillMessages::CreateKillmessageNamesIfNotCreated(CKillMsg &Kill)
 
 		Kill.m_KillerTextContainerIndex = TextRender()->CreateTextContainer(&Cursor, Kill.m_aKillerName);
 	}
+
+	if(Kill.m_AssistantTextContainerIndex == -1 && Kill.m_aAssistantName[0] != 0)
+	{
+		{
+			Kill.m_AssistantTextWidth = TextRender()->TextWidth(0, FontSize, Kill.m_aAssistantName, -1, -1.0f);
+
+			CTextCursor Cursor;
+			TextRender()->SetCursor(&Cursor, 0, 0, FontSize, TEXTFLAG_RENDER);
+			Cursor.m_LineWidth = -1;
+
+			unsigned Color = g_Config.m_ClKillMessageNormalColor;
+			TextRender()->TextColor(color_cast<ColorRGBA>(ColorHSLA(Color)));
+
+			Kill.m_AssistantTextContainerIndex = TextRender()->CreateTextContainer(&Cursor, Kill.m_aAssistantName);
+		}
+
+		{
+			// plus
+			const char aPlus[] = "+";
+			Kill.m_AssistantPlusWidth = TextRender()->TextWidth(0, FontSize, aPlus, -1, -1.0f);
+
+			CTextCursor Cursor;
+			TextRender()->SetCursor(&Cursor, 0, 0, FontSize, TEXTFLAG_RENDER);
+			Cursor.m_LineWidth = -1;
+
+			static const ColorRGBA PlusColor{0.8f, 0.8f, 0.8f, 1.0f};
+			TextRender()->TextColor(PlusColor);
+
+			Kill.m_AssistantPlusContainerIndex = TextRender()->CreateTextContainer(&Cursor, aPlus);
+		}
+	}
+
 	TextRender()->TextColor(TextRender()->DefaultTextColor());
 }
 
@@ -402,6 +434,21 @@ void CKillMessages::OnRender()
 				}
 			}
 
+			if(m_aKillmsgs[r].m_AssistantID >= 0)
+			{
+				// render assistant tee
+				x -= 24.0f;
+
+				CTeeRenderInfo TeeInfo = m_aKillmsgs[r].m_AssistantRenderInfo;
+
+				CAnimState *pIdleState = CAnimState::GetIdle();
+				vec2 OffsetToMid;
+				RenderTools()->GetRenderTeeOffsetToRenderedTee(pIdleState, &TeeInfo, OffsetToMid);
+				vec2 TeeRenderPos(x, y + 46.0f / 2.0f + OffsetToMid.y);
+
+				RenderTools()->RenderTee(pIdleState, &TeeInfo, EMOTE_ANGRY, vec2(1, 0), TeeRenderPos);
+			}
+
 			// render killer tee
 			x -= 24.0f;
 
@@ -418,6 +465,23 @@ void CKillMessages::OnRender()
 			}
 
 			x -= 32.0f;
+
+			if(m_aKillmsgs[r].m_AssistantID >= 0)
+			{
+				// render assistant name
+				x -= m_aKillmsgs[r].m_AssistantTextWidth;
+
+				if(m_aKillmsgs[r].m_AssistantTextContainerIndex != -1)
+				{
+					TextRender()->RenderTextContainer(m_aKillmsgs[r].m_AssistantTextContainerIndex, &TColor, &TOutlineColor, x, y + (46.f - 36.f) / 2.f);
+
+					unsigned Color = g_Config.m_ClKillMessageHighlightColor;
+					STextRenderColor TPlusColor(color_cast<ColorRGBA>(ColorHSLA(Color)));
+
+					x -= m_aKillmsgs[r].m_AssistantPlusWidth;
+					TextRender()->RenderTextContainer(m_aKillmsgs[r].m_AssistantPlusContainerIndex, &TPlusColor, &TOutlineColor, x, y + (46.f - 36.f) / 2.f);
+				}
+			}
 
 			// render killer name
 			x -= m_aKillmsgs[r].m_KillerTextWidth;
