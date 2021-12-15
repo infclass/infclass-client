@@ -18,6 +18,7 @@
 #include "skins.h"
 
 static const char *VANILLA_SKINS[] = {"bluekitty", "bluestripe", "brownbear",
+	"inf_ninja",
 	"cammo", "cammostripes", "coala", "default", "limekitty",
 	"pinky", "redbopp", "redstripe", "saddo", "toptri",
 	"twinbop", "twintri", "warpaint", "x_ninja", "x_spec"};
