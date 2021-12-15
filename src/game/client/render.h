@@ -26,6 +26,7 @@ public:
 
 	CSkin::SSkinMetrics m_SkinMetrics;
 
+	bool m_InfectedHook = false;
 	bool m_CustomColoredSkin;
 	ColorRGBA m_BloodColor;
 
