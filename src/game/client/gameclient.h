@@ -378,6 +378,7 @@ public:
 
 		int m_InfClassPlayerFlags;
 		int m_InfClassPlayerClass;
+		bool m_InfClassCustomSkin;
 
 		char m_aName[MAX_NAME_LENGTH];
 		char m_aClan[MAX_CLAN_LENGTH];
@@ -411,6 +412,7 @@ public:
 		CCharacterCore m_Predicted;
 		CCharacterCore m_PrevPredicted;
 
+		CTeeRenderInfo m_InfClassSkinInfo; // the local idea about the proper class skin
 		CTeeRenderInfo m_SkinInfo; // this is what the server reports
 		CTeeRenderInfo m_RenderInfo; // this is what we use
 
