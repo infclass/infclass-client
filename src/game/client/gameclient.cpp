@@ -1965,7 +1965,7 @@ void CGameClient::CClientStats::Reset()
 
 void CGameClient::CClientData::UpdateRenderInfo(bool IsTeamPlay)
 {
-	m_RenderInfo = m_SkinInfo;
+	m_RenderInfo = m_InfClassCustomSkin ? m_InfClassSkinInfo : m_SkinInfo;
 
 	// force team colors
 	if(IsTeamPlay)
@@ -2015,6 +2015,7 @@ void CGameClient::CClientData::Reset()
 
 	m_InfClassPlayerFlags = 0;
 	m_InfClassPlayerClass = -1;
+	m_InfClassCustomSkin = false;
 
 	m_Solo = false;
 	m_Jetpack = false;
@@ -2611,7 +2612,32 @@ vec2 CGameClient::GetSmoothPos(int ClientID)
 void CGameClient::ProcessInfClassPlayerInfo(CClientData *pClient, const CNetObj_InfClassPlayer *pPlayerData)
 {
 	pClient->m_InfClassPlayerFlags = pPlayerData->m_Flags;
+	if(pClient->m_InfClassPlayerClass == pPlayerData->m_Class)
+		return;
+
 	pClient->m_InfClassPlayerClass = pPlayerData->m_Class;
+
+	int Skin = -1;
+	switch(pClient->m_InfClassPlayerClass)
+	{
+	default:
+		break;
+	}
+
+	pClient->m_InfClassCustomSkin = Skin >= 0;
+
+	if(Skin >= 0)
+	{
+		const CSkin *pSkin = m_Skins.Get(Skin);
+		pClient->m_InfClassSkinInfo.m_OriginalRenderSkin = pSkin->m_OriginalSkin;
+		pClient->m_InfClassSkinInfo.m_ColorableRenderSkin = pSkin->m_ColorableSkin;
+		pClient->m_InfClassSkinInfo.m_BloodColor = pSkin->m_BloodColor;
+		pClient->m_InfClassSkinInfo.m_SkinMetrics = pSkin->m_Metrics;
+		pClient->m_InfClassSkinInfo.m_CustomColoredSkin = false;
+		pClient->m_InfClassSkinInfo.m_Size = 64;
+	}
+
+	pClient->UpdateRenderInfo(IsTeamPlay());
 }
 
 void CGameClient::Echo(const char *pString)
