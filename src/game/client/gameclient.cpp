@@ -3170,6 +3170,17 @@ int CGameClient::GetInfclassSpriteForDamageType(DAMAGE_TYPE DamageType)
 	}
 }
 
+float CGameClient::GetAspectTextureRatio(DAMAGE_TYPE DamageType)
+{
+	int SpriteIndex = GetInfclassSpriteForDamageType(DamageType);
+	float H = g_pData->m_aSprites[SpriteIndex].m_H;
+	float W = g_pData->m_aSprites[SpriteIndex].m_W;
+	if (W <= 0) {
+		return 0;
+	}
+	return W / H;
+}
+
 IGraphics::CTextureHandle *CGameClient::GetInfclassTexturePtrForDamageType(DAMAGE_TYPE DamageType)
 {
 	switch(DamageType)
