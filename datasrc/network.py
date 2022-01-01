@@ -36,6 +36,8 @@ Emoticons = ["OOP", "EXCLAMATION", "HEARTS", "DROP", "DOTDOT", "MUSIC", "SORRY",
 
 InfClassPlayerFlags = ["INFECTED", "HOOK_PROTECTION_OFF"]
 
+InfClassObjectFlags = ["HAS_SECOND_POSITION"]
+
 Powerups = ["HEALTH", "ARMOR", "WEAPON", "NINJA"]
 Authed = ["NO", "HELPER", "MOD", "ADMIN"]
 EntityClasses = ["PROJECTILE", "DOOR", "DRAGGER_WEAK", "DRAGGER_NORMAL", "DRAGGER_STRONG", "GUN_NORMAL", "GUN_EXPLOSIVE", "GUN_FREEZE", "GUN_UNFREEZE", "LIGHT", "PICKUP"]
@@ -93,6 +95,7 @@ Flags = [
 	Flags("EXPLAYERFLAG", ExPlayerFlags),
 	Flags("PROJECTILEFLAG", ProjectileFlags),
 	Flags("INFCLASS_PLAYER_FLAG", InfClassPlayerFlags),
+	Flags("INFCLASS_OBJECT_FLAG", InfClassObjectFlags),
 ]
 
 Objects = [
@@ -236,6 +239,15 @@ Objects = [
 
 	NetObjectEx("MyOwnObject", "my-own-object@heinrich5991.de", [
 		NetIntAny("m_Test"),
+	]),
+
+	NetObjectEx("InfClassObject", "object@infclass", [
+		NetIntAny("m_Flags"),
+		NetIntRange("m_Owner", -1, 'MAX_CLIENTS-1'),
+		NetIntAny("m_X"),
+		NetIntAny("m_Y"),
+		NetIntAny("m_X2"),
+		NetIntAny("m_Y2"),
 	]),
 
 	NetObjectEx("InfClassPlayer", "player@infclass", [
