@@ -35,6 +35,7 @@ ProjectileFlags = ["CLIENTID_BIT{}".format(i) for i in range(8)] + [
 ]
 
 InfClassPlayerFlags = ["INFECTED", "HOOK_PROTECTION_OFF"]
+InfClassObjectFlags = ["HAS_SECOND_POSITION"]
 
 Emoticons = ["OOP", "EXCLAMATION", "HEARTS", "DROP", "DOTDOT", "MUSIC", "SORRY", "GHOST", "SUSHI", "SPLATTEE", "DEVILTEE", "ZOMG", "ZZZ", "WTF", "EYES", "QUESTION"]
 
@@ -92,6 +93,7 @@ Flags = [
 	Flags("EXPLAYERFLAG", ExPlayerFlags),
 	Flags("PROJECTILEFLAG", ProjectileFlags),
 	Flags("INFCLASS_PLAYER_FLAG", InfClassPlayerFlags),
+	Flags("INFCLASS_OBJECT_FLAG", InfClassObjectFlags),
 ]
 
 Objects = [
@@ -235,6 +237,15 @@ Objects = [
 
 	NetObjectEx("MyOwnObject", "my-own-object@heinrich5991.de", [
 		NetIntAny("m_Test"),
+	]),
+
+	NetObjectEx("InfClassObject", "object@infclass", [
+		NetIntAny("m_Flags"),
+		NetIntRange("m_Owner", -1, 'MAX_CLIENTS-1'),
+		NetIntAny("m_X"),
+		NetIntAny("m_Y"),
+		NetIntAny("m_X2"),
+		NetIntAny("m_Y2"),
 	]),
 
 	NetObjectEx("InfClassPlayer", "player@infclass", [
