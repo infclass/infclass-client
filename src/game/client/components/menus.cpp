@@ -957,14 +957,34 @@ void CMenus::RenderLoading()
 	RenderTools()->DrawRoundRect(x, y, w, h, 40.0f);
 	Graphics()->QuadsEnd();
 
+	char aBuffer[256];
+#if 0
+	// TODO (the change 'll break all translations):
+	const char *pCaption = Localize("Loading %s Client");
+	// The use of some external string (pCaption) instead of a string literal is also not so good:
+	str_format(aBuffer, sizeof(aBuffer), pCaption, GAME_NAME);
+#else
 	const char *pCaption = Localize("Loading DDNet Client");
+
+	const char *pHardcodedDDNet = str_find(pCaption, "DDNet");
+	int offset = pHardcodedDDNet - pCaption;
+	// "Loading "
+	str_copy(aBuffer, pCaption, sizeof(aBuffer));
+
+	// "Loading " + "GAME_NAME"
+	str_copy(aBuffer + offset, GAME_NAME, sizeof(aBuffer) - offset);
+
+	// "Loading " + "GAME_NAME" " Client"
+	// '-1' is to overwrite null termination (sizeof(GAME_NAME) is the number of characters + null termination)
+	str_copy(aBuffer + offset + sizeof(GAME_NAME) - 1, pCaption + (offset + sizeof("DDNet")) - 1, sizeof(aBuffer) - offset - sizeof(GAME_NAME) - 1);
+#endif
 
 	CUIRect r;
 	r.x = x;
 	r.y = y + 20;
 	r.w = w;
 	r.h = h - 130;
-	UI()->DoLabel(&r, pCaption, 48.0f, 0, -1);
+	UI()->DoLabel(&r, aBuffer, 48.0f, 0, -1);
 
 	Graphics()->TextureClear();
 	Graphics()->QuadsBegin();
