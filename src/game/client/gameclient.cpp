@@ -964,6 +964,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	bool Race;
 	bool FastCap;
 	bool FNG;
+	bool Infclass;
 	bool DDRace;
 	bool DDNet;
 	bool BlockWorlds;
@@ -1002,6 +1003,8 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 		Race = Race || FastCap || DDRace;
 	}
 
+	Infclass = IsInfclass(pFallbackServerInfo);
+
 	CGameInfo Info;
 	Info.m_FlagStartsRace = FastCap;
 	Info.m_TimeScore = Race;
@@ -1024,6 +1027,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	Info.m_EntitiesDDRace = DDRace;
 	Info.m_EntitiesRace = Race;
 	Info.m_EntitiesFNG = FNG;
+	Info.m_EntitiesInfclass = Infclass;
 	Info.m_EntitiesVanilla = Vanilla;
 	Info.m_EntitiesBW = BlockWorlds;
 	Info.m_Race = Race;
