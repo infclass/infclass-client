@@ -3568,6 +3568,8 @@ void CGameClient::SnapCollectEntities()
 			vItemEx.push_back({Item, pData, 0});
 		else if(Item.m_Type == NETOBJTYPE_PICKUP || Item.m_Type == NETOBJTYPE_LASER || Item.m_Type == NETOBJTYPE_DDNETLASER || Item.m_Type == NETOBJTYPE_PROJECTILE || Item.m_Type == NETOBJTYPE_DDNETPROJECTILE)
 			vItemData.push_back({Item, pData, 0});
+		else if(Item.m_Type == NETOBJTYPE_INFCLASSOBJECT)
+			vItemData.push_back({Item, pData, 0});
 	}
 
 	// sort by id
