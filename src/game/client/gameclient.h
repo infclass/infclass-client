@@ -388,6 +388,8 @@ public:
 		CTeeRenderInfo m_InfClassSkinInfo; // the local idea about the proper class skin
 		CTeeRenderInfo m_SkinInfo; // this is what the server reports
 		CTeeRenderInfo m_RenderInfo; // this is what we use
+		vec2 m_aOwnerIconPositions[8];
+		int m_OwnerIcons;
 
 		float m_Angle;
 		bool m_Active;

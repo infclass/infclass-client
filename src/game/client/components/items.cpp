@@ -9,6 +9,7 @@
 
 #include <game/mapitems.h>
 
+#include <game/client/animstate.h>
 #include <game/client/gameclient.h>
 #include <game/client/laser_data.h>
 #include <game/client/pickup_data.h>
@@ -65,19 +66,8 @@ void CItems::RenderProjectile(const CProjectileData *pCurrent, int ItemID)
 		Ct = (Client()->PrevGameTick(g_Config.m_ClDummy) - pCurrent->m_StartTick) / (float)SERVER_TICK_SPEED + s_LastGameTickTime;
 	if(Ct < 0)
 	{
-		if(Ct > -s_LastGameTickTime / 2)
+		if(Client()->GameTick(g_Config.m_ClDummy) >= pCurrent->m_StartTick)
 		{
-			// Fixup the timing which might be screwed during demo playback because
-			// s_LastGameTickTime depends on the system timer, while the other part
-			// (Client()->PrevGameTick(g_Config.m_ClDummy) - pCurrent->m_StartTick) / (float)SERVER_TICK_SPEED
-			// is virtually constant (for projectiles fired on the current game tick):
-			// (x - (x+2)) / 50 = -0.04
-			//
-			// We have a strict comparison for the passed time being more than the time between ticks
-			// if(CurtickStart > m_Info.m_CurrentTime) in CDemoPlayer::Update()
-			// so on the practice the typical value of s_LastGameTickTime varies from 0.02386 to 0.03999
-			// which leads to Ct from -0.00001 to -0.01614.
-			// Round up those to 0.0 to fix missing rendering of the projectile.
 			Ct = 0;
 		}
 		else
@@ -356,10 +346,62 @@ void CItems::RenderLaser(const CLaserData *pCurrent, bool IsPredicted)
 	}
 }
 
+void CItems::RenderInfclassObject(const CNetObj_InfClassObject *pCurrent, bool IsPredicted)
+{
+	const CNetObj_Character *pLocalCharacter = m_pClient->m_Snap.m_pLocalCharacter;
+	if(!pLocalCharacter)
+		return;
+
+	int LocalCID = m_pClient->m_aLocalIDs[g_Config.m_ClDummy];
+	int SpecCID = m_pClient->m_Snap.m_SpecInfo.m_SpectatorID;
+	int CameraCID = m_pClient->m_Snap.m_SpecInfo.m_Active ? SpecCID : LocalCID;
+
+#if 1
+	if((CameraCID >= 0) && (pCurrent->m_Owner == CameraCID))
+	{
+		// Do not render the icon here, render it in HUD instead.
+		bool TakeSecondPos = (pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION) && (pCurrent->m_Y2 > pCurrent->m_Y);
+		vec2 Pos = TakeSecondPos ? vec2(pCurrent->m_X2, pCurrent->m_Y2) : vec2(pCurrent->m_X, pCurrent->m_Y);
+
+		if(pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION)
+		{
+			float Offset = 24;
+			if(TakeSecondPos)
+			{
+				Pos += normalize(Pos - vec2(pCurrent->m_X, pCurrent->m_Y)) * Offset;
+			}
+			else
+			{
+				Pos += normalize(Pos - vec2(pCurrent->m_X2, pCurrent->m_Y2)) * Offset;
+			}
+		}
+		int &Icons = m_pClient->m_aClients[CameraCID].m_OwnerIcons;
+		m_pClient->m_aClients[CameraCID].m_aOwnerIconPositions[Icons] = Pos;
+		++Icons;
+	}
+#else
+	if(pCurrent->m_Owner == LocalCID)
+	{
+		CTeeRenderInfo RenderInfo = m_pClient->m_aClients[LocalCID].m_RenderInfo;
+		RenderInfo.m_Size = 32;
+
+		bool TakeSecondPos = (pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION) && (pCurrent->m_Y2 > pCurrent->m_Y);
+		vec2 Pos = TakeSecondPos ? vec2(pCurrent->m_X2, pCurrent->m_Y2) : vec2(pCurrent->m_X, pCurrent->m_Y);
+		const vec2 Offset(0, pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION ? 16 : 0);
+		RenderTools()->RenderTee(CAnimState::GetIdle(), &RenderInfo, EMOTE_HAPPY, vec2(1, 0), Pos + Offset);
+	}
+#endif
+}
+
 void CItems::OnRender()
 {
 	if(Client()->State() != IClient::STATE_ONLINE && Client()->State() != IClient::STATE_DEMOPLAYBACK)
 		return;
+
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		m_pClient->m_aClients[i].m_OwnerIcons = 0;
+	}
 
 	bool IsSuper = m_pClient->IsLocalCharSuper();
 	int Ticks = Client()->GameTick(g_Config.m_ClDummy) % Client()->GameTickSpeed();
@@ -507,6 +549,11 @@ void CItems::OnRender()
 			}
 
 			RenderLaser(&Data);
+		}
+		else if(Item.m_Type == NETOBJTYPE_INFCLASSOBJECT)
+		{
+			const CNetObj_InfClassObject *pObject = static_cast<const CNetObj_InfClassObject *>(pData);
+			RenderInfclassObject(pObject);
 		}
 	}
 
