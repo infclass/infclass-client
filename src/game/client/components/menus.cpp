@@ -967,6 +967,7 @@ void CMenus::RenderLoading(bool IncreaseCounter, bool RenderLoadingBar)
 	Graphics()->QuadsEnd();
 
 	const char *pCaption = Localize("Loading DDNet Client");
+	pCaption = CUI::ReplaceHardcodedGameName(pCaption);
 
 	CUIRect r;
 	r.x = x;
