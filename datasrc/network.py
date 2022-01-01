@@ -36,7 +36,7 @@ ProjectileFlags = [f"CLIENTID_BIT{i}" for i in range(8)] + [
 
 LaserTypes = ["RIFLE", "SHOTGUN", "DOOR", "FREEZE"]
 
-InfClassPlayerFlags = ["INFECTED"]
+InfClassPlayerFlags = ["INFECTED", "HOOK_PROTECTION_OFF"]
 
 Emoticons = ["OOP", "EXCLAMATION", "HEARTS", "DROP", "DOTDOT", "MUSIC", "SORRY", "GHOST", "SUSHI", "SPLATTEE", "DEVILTEE", "ZOMG", "ZZZ", "WTF", "EYES", "QUESTION"]
 
