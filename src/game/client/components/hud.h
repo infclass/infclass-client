@@ -53,6 +53,7 @@ class CHud : public CComponent
 	void PrepareStatusIconQuads();
 	void RenderHealthAndAmmo(const CNetObj_Character *pCharacter);
 	void RenderStatusIcons(int ClientID);
+	void RenderObjectOwnerIcons(int ClientID);
 
 	void RenderGameTimer();
 	void RenderPauseNotification();

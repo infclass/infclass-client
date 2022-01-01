@@ -844,6 +844,31 @@ void CHud::RenderStatusIcons(int ClientID)
 	}
 }
 
+void CHud::RenderObjectOwnerIcons(int ClientID)
+{
+	if(ClientID < 0)
+		return;
+
+	int Icons = m_pClient->m_aClients[ClientID].m_OwnerIcons;
+	if(!Icons)
+		return;
+
+	float ScreenX0, ScreenY0, ScreenX1, ScreenY1;
+	Graphics()->GetScreen(&ScreenX0, &ScreenY0, &ScreenX1, &ScreenY1);
+	MapscreenToGroup(m_pClient->m_Camera.m_Center.x, m_pClient->m_Camera.m_Center.y, Layers()->GameGroup());
+
+	CTeeRenderInfo RenderInfo = m_pClient->m_aClients[ClientID].m_RenderInfo;
+	RenderInfo.m_Size = 32;
+
+	for(int i = 0; i < Icons; ++i)
+	{
+		const vec2 &Pos = m_pClient->m_aClients[ClientID].m_aOwnerIconPositions[i];
+		RenderTools()->RenderTee(CAnimState::GetIdle(), &RenderInfo, EMOTE_HAPPY, vec2(1, 0), Pos);
+	}
+
+	Graphics()->MapScreen(ScreenX0, ScreenY0, ScreenX1, ScreenY1);
+}
+
 void CHud::RenderSpectatorHud()
 {
 	// draw the box
@@ -899,6 +924,7 @@ void CHud::OnRender()
 			{
 				RenderHealthAndAmmo(m_pClient->m_Snap.m_pLocalCharacter);
 				RenderStatusIcons(m_pClient->m_LocalIDs[g_Config.m_ClDummy]);
+				RenderObjectOwnerIcons(m_pClient->m_LocalIDs[g_Config.m_ClDummy]);
 			}
 			RenderDDRaceEffects();
 		}
@@ -908,6 +934,7 @@ void CHud::OnRender()
 			{
 				RenderHealthAndAmmo(&m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_SpecInfo.m_SpectatorID].m_Cur);
 				RenderStatusIcons(m_pClient->m_Snap.m_SpecInfo.m_SpectatorID);
+				RenderObjectOwnerIcons(m_pClient->m_Snap.m_SpecInfo.m_SpectatorID);
 			}
 			RenderSpectatorHud();
 		}

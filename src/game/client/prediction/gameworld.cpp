@@ -472,6 +472,10 @@ void CGameWorld::NetObjAdd(int ObjID, int ObjType, const void *pObjData, const C
 			}
 		}
 	}
+	else if(ObjType == NETOBJTYPE_INFCLASSOBJECT)
+	{
+
+	}
 }
 
 void CGameWorld::NetObjEnd(int LocalID)
