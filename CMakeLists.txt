@@ -1952,11 +1952,12 @@ if(CLIENT)
   endif()
 
   if(TARGET_OS STREQUAL "windows")
+    configure_file("other/manifest/client.manifest.in" "client.manifest")
     set(CLIENT_ICON "other/icons/DDNet.rc")
     if(NOT MINGW)
-      set(CLIENT_MANIFEST "other/manifest/DDNet.manifest")
+      set(CLIENT_MANIFEST "${CMAKE_CURRENT_BINARY_DIR}/client.manifest")
     else()
-      set(CLIENT_MANIFEST "other/manifest/DDNet.rc")
+      set(CLIENT_MANIFEST "other/manifest/client.rc")
       set_target_properties(${TARGET_STEAMAPI} PROPERTIES PREFIX "")
     endif()
   else()
@@ -2589,7 +2590,10 @@ set(PACKAGE_TARGETS)
 if(CLIENT AND DMGBUILD)
   file(MAKE_DIRECTORY bundle/client/)
   file(MAKE_DIRECTORY bundle/server/)
+
+  set(BUNDLE_IDENTIFIER "org.${CMAKE_PROJECT_NAME}Client.app")
   configure_file(other/bundle/client/Info.plist.in bundle/client/Info.plist)
+  unset(BUNDLE_IDENTIFIER)
   configure_file(other/bundle/server/Info.plist.in bundle/server/Info.plist)
 
   set(DMG_TMPDIR pack_${CPACK_PACKAGE_FILE_NAME}_dmg)
@@ -2627,7 +2631,7 @@ if(CLIENT AND DMGBUILD)
 
     # CLIENT
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/data ${DMG_TMPDIR}/${TARGET_CLIENT}.app/Contents/Resources/data
-    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/other/icons/${TARGET_CLIENT}.icns ${DMG_TMPDIR}/${TARGET_CLIENT}.app/Contents/Resources/
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/other/icons/client.icns ${DMG_TMPDIR}/${TARGET_CLIENT}.app/Contents/Resources/
     COMMAND ${CMAKE_COMMAND} -E copy bundle/client/Info.plist ${PROJECT_SOURCE_DIR}/other/bundle/client/PkgInfo ${DMG_TMPDIR}/${TARGET_CLIENT}.app/Contents/
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${TARGET_CLIENT}> ${TARGET_TOOLS_FILES} ${DMG_TMPDIR}/${TARGET_CLIENT}.app/Contents/MacOS/
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/ddnet-libs/sdl/${LIB_DIR}/SDL2.framework ${DMG_TMPDIR}/${TARGET_CLIENT}.app/Contents/Frameworks/SDL2.framework
@@ -2653,7 +2657,7 @@ if(CLIENT AND DMGBUILD)
       other/bundle/client/PkgInfo
       other/dmgbackground.png
       other/dmgsettings.py
-      other/icons/${TARGET_CLIENT}.icns
+      other/icons/client.icns
   )
   add_custom_target(package_dmg DEPENDS ${CPACK_PACKAGE_FILE_NAME}.dmg)
   list(APPEND PACKAGE_TARGETS package_dmg)
