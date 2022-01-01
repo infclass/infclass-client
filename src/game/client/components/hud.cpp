@@ -99,6 +99,9 @@ void CHud::OnInit()
 	RenderTools()->QuadContainerAddSprite(m_HudQuadContainerIndex, 0.f, 0.f, 8.f, 16.f);
 	Graphics()->QuadsSetSubset(0, 0, 1, 1);
 	RenderTools()->QuadContainerAddSprite(m_HudQuadContainerIndex, 0.f, 0.f, 8.f, 16.f);
+
+	PrepareStatusIconQuads();
+
 	Graphics()->QuadContainerUpload(m_HudQuadContainerIndex);
 }
 
@@ -750,6 +753,23 @@ void CHud::PrepareHealthAmoQuads()
 	Graphics()->QuadContainerAddQuads(m_HudQuadContainerIndex, Array, 10);
 }
 
+void CHud::PrepareStatusIconQuads()
+{
+	float x = 5;
+	float y = 5;
+
+	y += 24 + 12;
+
+	IGraphics::CQuadItem Array[10];
+
+	int MaxStatusIcons = 4;
+	for(int i = 0; i < MaxStatusIcons; ++i)
+	{
+		Array[i] = IGraphics::CQuadItem(x + i * 24, y, g_Config.m_ClInfStatusSize, g_Config.m_ClInfStatusSize);
+	}
+	Graphics()->QuadContainerAddQuads(m_HudQuadContainerIndex, Array, MaxStatusIcons);
+}
+
 void CHud::RenderHealthAndAmmo(const CNetObj_Character *pCharacter)
 {
 	if(!pCharacter)
@@ -791,6 +811,37 @@ void CHud::RenderHealthAndAmmo(const CNetObj_Character *pCharacter)
 	QuadOffset += 10 * 2 + minimum(pCharacter->m_Armor, 10);
 	if(minimum(pCharacter->m_Armor, 10) < 10)
 		Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, QuadOffset, 10 - minimum(pCharacter->m_Armor, 10));
+}
+
+void CHud::RenderStatusIcons(int ClientID)
+{
+	if(ClientID < 0)
+	{
+		return;
+	}
+
+	const CGameClient::CClientData *pClientData = &m_pClient->m_aClients[ClientID];
+	int InfclassPlayerFlags = pClientData->m_InfClassPlayerFlags;
+
+	// For some reason we still need the same offset for non sixup skins. Comment out for now:
+	// bool IsSixupGameSkin = GameClient()->m_GameSkin.IsSixup();
+	// int QuadOffsetSixup = (IsSixupGameSkin ? 10 : 0);
+	int QuadOffsetSixup = 10;
+
+	int QuadOffset = NUM_WEAPONS * 10 * 2 + 20 * 2 + QuadOffsetSixup + 20 + 10
+	// Cursors
+			+ NUM_WEAPONS
+	// Flags
+			+ 2
+			;
+
+	int UsedIcons = 0;
+	if(InfclassPlayerFlags & INFCLASS_PLAYER_FLAG_HOOK_PROTECTION_OFF)
+	{
+		Graphics()->TextureSet(GameClient()->m_InfclassSkin.m_SpriteStatusHookable);
+		Graphics()->RenderQuadContainer(m_HudQuadContainerIndex, QuadOffset + UsedIcons, 1);
+		++UsedIcons;
+	}
 }
 
 void CHud::RenderSpectatorHud()
@@ -845,13 +896,19 @@ void CHud::OnRender()
 		if(m_pClient->m_Snap.m_pLocalCharacter && !(m_pClient->m_Snap.m_pGameInfoObj->m_GameStateFlags & GAMESTATEFLAG_GAMEOVER))
 		{
 			if(g_Config.m_ClShowhudHealthAmmo)
+			{
 				RenderHealthAndAmmo(m_pClient->m_Snap.m_pLocalCharacter);
+				RenderStatusIcons(m_pClient->m_LocalIDs[g_Config.m_ClDummy]);
+			}
 			RenderDDRaceEffects();
 		}
 		else if(m_pClient->m_Snap.m_SpecInfo.m_Active)
 		{
 			if(m_pClient->m_Snap.m_SpecInfo.m_SpectatorID != SPEC_FREEVIEW && g_Config.m_ClShowhudHealthAmmo)
+			{
 				RenderHealthAndAmmo(&m_pClient->m_Snap.m_aCharacters[m_pClient->m_Snap.m_SpecInfo.m_SpectatorID].m_Cur);
+				RenderStatusIcons(m_pClient->m_Snap.m_SpecInfo.m_SpectatorID);
+			}
 			RenderSpectatorHud();
 		}
 
