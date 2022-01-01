@@ -9,5 +9,5 @@
 #define GAME_NETVERSION "0.6 626fce9a778df4d4"
 #define CLIENT_VERSIONNR 16090
 extern const char *GIT_SHORTREV_HASH;
-#define GAME_NAME "DDNet"
+#define GAME_NAME "Infclass"
 #endif
