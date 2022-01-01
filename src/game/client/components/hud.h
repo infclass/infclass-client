@@ -54,7 +54,9 @@ class CHud : public CComponent
 	void RenderVoting();
 
 	void PrepareAmmoHealthAndArmorQuads();
+	void PrepareInfclassHudQuads();
 	void RenderAmmoHealthAndArmor(const CNetObj_Character *pCharacter);
+	void RenderStatusIcons(int ClientID);
 
 	void PreparePlayerStateQuads();
 	void RenderPlayerState(const int ClientID);
@@ -131,6 +133,8 @@ private:
 	int m_DummyHammerOffset;
 	int m_DummyCopyOffset;
 	int m_PracticeModeOffset;
+
+	int m_IcStatusIconOffset;
 };
 
 #endif
