@@ -161,7 +161,8 @@ void CCamera::OnRender()
 		else
 			s_aCurrentCameraOffset[g_Config.m_ClDummy] = TargetCameraOffset;
 
-		if(m_pClient->m_Snap.m_SpecInfo.m_Active)
+		bool InfSpecTarget = m_pClient->m_Snap.m_pLocalInfo && m_pClient->m_aClients[m_pClient->m_Snap.m_pLocalInfo->m_ClientID].m_InfClassPlayerFlags & INFCLASS_PLAYER_FLAG_FORCED_TO_SPECTATE;
+		if(m_pClient->m_Snap.m_SpecInfo.m_Active || InfSpecTarget)
 			m_Center = m_pClient->m_Snap.m_SpecInfo.m_Position + s_aCurrentCameraOffset[g_Config.m_ClDummy];
 		else
 			m_Center = m_pClient->m_LocalCharacterPos + s_aCurrentCameraOffset[g_Config.m_ClDummy];

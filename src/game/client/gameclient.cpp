@@ -602,7 +602,8 @@ void CGameClient::UpdatePositions()
 	}
 
 	// spectator position
-	if(m_Snap.m_SpecInfo.m_Active)
+	bool InfForcedToSpectate = m_Snap.m_pLocalInfo && m_aClients[m_Snap.m_pLocalInfo->m_ClientID].m_InfClassPlayerFlags & INFCLASS_PLAYER_FLAG_FORCED_TO_SPECTATE;
+	if(m_Snap.m_SpecInfo.m_Active || InfForcedToSpectate)
 	{
 		if(Client()->State() == IClient::STATE_DEMOPLAYBACK && m_DemoSpecID != SPEC_FOLLOW && m_Snap.m_SpecInfo.m_SpectatorID != SPEC_FREEVIEW)
 		{
