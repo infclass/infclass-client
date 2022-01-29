@@ -198,7 +198,9 @@ class CClient : public IClient, public CDemoPlayer::IListener
 	SHA256_DIGEST m_MapDetailsSha256;
 
 	char m_aDDNetInfoTmp[64];
+	char m_aInfclassInfoTmp[64];
 	std::shared_ptr<CGetFile> m_pDDNetInfoTask;
+	std::shared_ptr<CGetFile> m_pInfClassInfoTask;
 
 	// time
 	CSmoothTime m_GameTime[NUM_DUMMIES];
@@ -388,10 +390,15 @@ public:
 	void FinishMapDownload();
 
 	void RequestDDNetInfo();
+	void RequestInfclassInfo();
 	void ResetDDNetInfo();
+	void ResetInfclassInfo();
 	bool IsDDNetInfoChanged();
+	bool IsInfclassInfoChanged();
 	void FinishDDNetInfo();
+	void FinishInfclassInfo();
 	void LoadDDNetInfo();
+	void LoadInfclassInfo();
 
 	virtual const char *ServerAddress() const { return m_aServerAddressStr; }
 	virtual const char *MapDownloadName() const { return m_aMapdownloadName; }

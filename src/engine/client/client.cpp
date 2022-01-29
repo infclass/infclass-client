@@ -365,7 +365,9 @@ CClient::CClient() :
 	m_MapDetailsCrc = 0;
 
 	IStorage::FormatTmpPath(m_aDDNetInfoTmp, sizeof(m_aDDNetInfoTmp), DDNET_INFO);
+	IStorage::FormatTmpPath(m_aInfclassInfoTmp, sizeof(m_aInfclassInfoTmp), INFCLASS_INFO);
 	m_pDDNetInfoTask = NULL;
+	m_pInfClassInfoTask = nullptr;
 	m_aNews[0] = '\0';
 	m_aMapDownloadUrl[0] = '\0';
 	m_Points = -1;
@@ -2247,6 +2249,15 @@ void CClient::ResetDDNetInfo()
 	}
 }
 
+void CClient::ResetInfclassInfo()
+{
+	if(m_pInfClassInfoTask)
+	{
+		m_pInfClassInfoTask->Abort();
+		m_pInfClassInfoTask = NULL;
+	}
+}
+
 bool CClient::IsDDNetInfoChanged()
 {
 	IOHANDLE OldFile = m_pStorage->OpenFile(DDNET_INFO, IOFLAG_READ | IOFLAG_SKIP_BOM, IStorage::TYPE_SAVE);
@@ -2255,6 +2266,42 @@ bool CClient::IsDDNetInfoChanged()
 		return true;
 
 	IOHANDLE NewFile = m_pStorage->OpenFile(m_aDDNetInfoTmp, IOFLAG_READ | IOFLAG_SKIP_BOM, IStorage::TYPE_SAVE);
+
+	if(NewFile)
+	{
+		char aOldData[4096];
+		char aNewData[4096];
+		unsigned OldBytes;
+		unsigned NewBytes;
+
+		do
+		{
+			OldBytes = io_read(OldFile, aOldData, sizeof(aOldData));
+			NewBytes = io_read(NewFile, aNewData, sizeof(aNewData));
+
+			if(OldBytes != NewBytes || mem_comp(aOldData, aNewData, OldBytes) != 0)
+			{
+				io_close(NewFile);
+				io_close(OldFile);
+				return true;
+			}
+		} while(OldBytes > 0);
+
+		io_close(NewFile);
+	}
+
+	io_close(OldFile);
+	return false;
+}
+
+bool CClient::IsInfclassInfoChanged()
+{
+	IOHANDLE OldFile = m_pStorage->OpenFile(INFCLASS_INFO, IOFLAG_READ | IOFLAG_SKIP_BOM, IStorage::TYPE_SAVE);
+
+	if(!OldFile)
+		return true;
+
+	IOHANDLE NewFile = m_pStorage->OpenFile(m_aInfclassInfoTmp, IOFLAG_READ | IOFLAG_SKIP_BOM, IStorage::TYPE_SAVE);
 
 	if(NewFile)
 	{
@@ -2302,6 +2349,20 @@ void CClient::FinishDDNetInfo()
 	}
 }
 
+void CClient::FinishInfclassInfo()
+{
+	ResetInfclassInfo();
+	if(IsInfclassInfoChanged())
+	{
+		m_pStorage->RenameFile(m_aInfclassInfoTmp, INFCLASS_INFO, IStorage::TYPE_SAVE);
+		LoadInfclassInfo();
+	}
+	else
+	{
+		m_pStorage->RemoveFile(m_aInfclassInfoTmp, IStorage::TYPE_SAVE);
+	}
+}
+
 typedef std::tuple<int, int, int> Version;
 static const Version InvalidVersion = std::make_tuple(-1, -1, -1);
 
@@ -2332,6 +2393,7 @@ void CClient::LoadDDNetInfo()
 	if(!pDDNetInfo)
 		return;
 
+#if 0
 	const json_value *pVersion = json_object_get(pDDNetInfo, "version");
 	if(pVersion->type == json_string)
 	{
@@ -2361,6 +2423,7 @@ void CClient::LoadDDNetInfo()
 
 		str_copy(m_aNews, pNewsString, sizeof(m_aNews));
 	}
+#endif
 
 	const json_value *pMapDownloadUrl = json_object_get(pDDNetInfo, "map-download-url");
 	if(pMapDownloadUrl->type == json_string)
@@ -2372,6 +2435,44 @@ void CClient::LoadDDNetInfo()
 	const json_value *pPoints = json_object_get(pDDNetInfo, "points");
 	if(pPoints->type == json_integer)
 		m_Points = pPoints->u.integer;
+}
+
+void CClient::LoadInfclassInfo()
+{
+	const json_value *pInfclassInfo = m_ServerBrowser.LoadInfclassInfo();
+
+	if(!pInfclassInfo)
+		return;
+
+	const json_value *pVersion = json_object_get(pInfclassInfo, "version");
+	if(pVersion->type == json_string)
+	{
+		char aNewVersionStr[64];
+		str_copy(aNewVersionStr, json_string_get(pVersion), sizeof(aNewVersionStr));
+		char aCurVersionStr[64];
+		str_copy(aCurVersionStr, GAME_RELEASE_VERSION, sizeof(aCurVersionStr));
+		if(ToVersion(aNewVersionStr) > ToVersion(aCurVersionStr))
+		{
+			str_copy(m_aVersionStr, json_string_get(pVersion), sizeof(m_aVersionStr));
+		}
+		else
+		{
+			m_aVersionStr[0] = '0';
+			m_aVersionStr[1] = '\0';
+		}
+	}
+
+	const json_value *pNews = json_object_get(pInfclassInfo, "news");
+	if(pNews->type == json_string)
+	{
+		const char *pNewsString = json_string_get(pNews);
+
+		// Only mark news button if something new was added to the news
+		if(m_aNews[0] && str_find(m_aNews, pNewsString) == nullptr)
+			g_Config.m_UiUnreadNews = true;
+
+		str_copy(m_aNews, pNewsString, sizeof(m_aNews));
+	}
 }
 
 void CClient::PumpNetwork()
@@ -2767,6 +2868,22 @@ void CClient::Update()
 		}
 	}
 
+	if(m_pInfClassInfoTask)
+	{
+		if(m_pInfClassInfoTask->State() == HTTP_DONE)
+			FinishInfclassInfo();
+		else if(m_pInfClassInfoTask->State() == HTTP_ERROR)
+		{
+			Storage()->RemoveFile(m_aInfclassInfoTmp, IStorage::TYPE_SAVE);
+			ResetInfclassInfo();
+		}
+		else if(m_pInfClassInfoTask->State() == HTTP_ABORTED)
+		{
+			Storage()->RemoveFile(m_aInfclassInfoTmp, IStorage::TYPE_SAVE);
+			m_pInfClassInfoTask = nullptr;
+		}
+	}
+
 	if(State() == IClient::STATE_ONLINE)
 	{
 		if(!m_EditJobs.empty())
@@ -3008,6 +3125,7 @@ void CClient::Run()
 
 	// loads the existing ddnet info file if it exists
 	LoadDDNetInfo();
+	LoadInfclassInfo();
 	// but still request the new one from server
 	if(g_Config.m_ClShowWelcome)
 		g_Config.m_ClShowWelcome = 0;
@@ -4629,6 +4747,17 @@ void CClient::RequestDDNetInfo()
 	// Use ipv4 so we can know the ingame ip addresses of players before they join game servers
 	m_pDDNetInfoTask = std::make_shared<CGetFile>(Storage(), aUrl, m_aDDNetInfoTmp, IStorage::TYPE_SAVE, CTimeout{10000, 500, 10}, HTTPLOG::ALL, IPRESOLVE::V4);
 	Engine()->AddJob(m_pDDNetInfoTask);
+
+	RequestInfclassInfo();
+}
+
+void CClient::RequestInfclassInfo()
+{
+	char aUrl[256];
+	str_copy(aUrl, INFC_UPDATES_URL "/info.json", sizeof(aUrl));
+
+	m_pInfClassInfoTask = std::make_shared<CGetFile>(Storage(), aUrl, m_aInfclassInfoTmp, IStorage::TYPE_SAVE, CTimeout{10000, 500, 10});
+	Engine()->AddJob(m_pInfClassInfoTask);
 }
 
 int CClient::GetPredictionTime()
