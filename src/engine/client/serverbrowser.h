@@ -105,7 +105,9 @@ public:
 	void RecheckOfficial();
 	void LoadDDNetServers();
 	void LoadDDNetInfoJson();
+	void LoadInfclassInfoJson();
 	const json_value *LoadDDNetInfo();
+	const json_value *LoadInfclassInfo();
 	int HasRank(const char *pMap);
 	int NumCountries(int Network) override { return m_aNetworks[Network].m_NumCountries; }
 	int GetCountryFlag(int Network, int Index) override { return m_aNetworks[Network].m_aCountries[Index].m_FlagID; }
@@ -159,6 +161,7 @@ private:
 	int m_OwnLocation = CServerInfo::LOC_UNKNOWN;
 
 	json_value *m_pDDNetInfo;
+	json_value *m_pInfclassInfo;
 
 	CServerEntry *m_pFirstReqServer; // request list
 	CServerEntry *m_pLastReqServer;

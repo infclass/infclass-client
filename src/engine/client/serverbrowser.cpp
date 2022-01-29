@@ -81,6 +81,7 @@ CServerBrowser::CServerBrowser()
 	secure_random_fill(m_aTokenSeed, sizeof(m_aTokenSeed));
 
 	m_pDDNetInfo = nullptr;
+	m_pInfclassInfo = nullptr;
 }
 
 CServerBrowser::~CServerBrowser()
@@ -88,6 +89,9 @@ CServerBrowser::~CServerBrowser()
 	free(m_ppServerlist);
 	free(m_pSortedServerlist);
 	json_value_free(m_pDDNetInfo);
+
+	if(m_pInfclassInfo)
+		json_value_free(m_pInfclassInfo);
 
 	delete m_pHttp;
 	m_pHttp = nullptr;
@@ -1352,6 +1356,39 @@ void CServerBrowser::LoadDDNetInfoJson()
 	}
 }
 
+void CServerBrowser::LoadInfclassInfoJson()
+{
+	IOHANDLE File = m_pStorage->OpenFile(INFCLASS_INFO, IOFLAG_READ | IOFLAG_SKIP_BOM, IStorage::TYPE_SAVE);
+	if(!File)
+		return;
+
+	const int Length = io_length(File);
+	if(Length <= 0)
+	{
+		io_close(File);
+		return;
+	}
+
+	char *pBuf = (char *)malloc(Length);
+	pBuf[0] = '\0';
+
+	io_read(File, pBuf, Length);
+	io_close(File);
+
+	if(m_pInfclassInfo)
+		json_value_free(m_pInfclassInfo);
+
+	m_pInfclassInfo = json_parse(pBuf, Length);
+
+	free(pBuf);
+
+	if(m_pInfclassInfo && m_pInfclassInfo->type != json_object)
+	{
+		json_value_free(m_pInfclassInfo);
+		m_pInfclassInfo = nullptr;
+	}
+}
+
 const char *CServerBrowser::GetTutorialServer()
 {
 	// Use DDNet tab as default after joining tutorial, also makes sure Find() actually works
@@ -1393,6 +1430,13 @@ const json_value *CServerBrowser::LoadDDNetInfo()
 	LoadDDNetRanks();
 
 	return m_pDDNetInfo;
+}
+
+const json_value *CServerBrowser::LoadInfclassInfo()
+{
+	LoadInfclassInfoJson();
+
+	return m_pInfclassInfo;
 }
 
 bool CServerBrowser::IsRefreshing() const
