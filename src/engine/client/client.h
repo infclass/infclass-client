@@ -208,7 +208,9 @@ class CClient : public IClient, public CDemoPlayer::IListener
 	char m_aMapDetailsUrl[256];
 
 	char m_aDDNetInfoTmp[64];
+	char m_aInfclassInfoTmp[64];
 	std::shared_ptr<CHttpRequest> m_pDDNetInfoTask;
+	std::shared_ptr<CHttpRequest> m_pInfClassInfoTask;
 
 	// time
 	CSmoothTime m_aGameTime[NUM_DUMMIES];
@@ -401,10 +403,15 @@ public:
 	void FinishMapDownload();
 
 	void RequestDDNetInfo() override;
+	void RequestInfclassInfo() override;
 	void ResetDDNetInfo();
+	void ResetInfclassInfo();
 	bool IsDDNetInfoChanged();
+	bool IsInfclassInfoChanged();
 	void FinishDDNetInfo();
+	void FinishInfclassInfo();
 	void LoadDDNetInfo();
+	void LoadInfclassInfo();
 
 	const NETADDR &ServerAddress() const override { return *m_aNetClient[CONN_MAIN].ServerAddress(); }
 	int ConnectNetTypes() const override;

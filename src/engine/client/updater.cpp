@@ -2,6 +2,7 @@
 #include <base/lock_scope.h>
 #include <base/system.h>
 #include <engine/client.h>
+#include <engine/client/infclass.h>
 #include <engine/engine.h>
 #include <engine/external/json-parser/json.h>
 #include <engine/shared/http.h>
@@ -30,7 +31,7 @@ public:
 
 static const char *GetUpdaterUrl(char *pBuf, int BufSize, const char *pFile)
 {
-	str_format(pBuf, BufSize, "https://update.ddnet.org/%s", pFile);
+	str_format(pBuf, BufSize, INFC_UPDATES_URL "/%s", pFile);
 	return pBuf;
 }
 

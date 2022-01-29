@@ -10,6 +10,7 @@
 #include "kernel.h"
 
 #define DDNET_INFO "ddnet-info.json"
+#define INFCLASS_INFO "infclass-info.json"
 
 class CUIElement;
 
