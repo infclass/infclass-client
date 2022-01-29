@@ -71,6 +71,7 @@ CServerBrowser::CServerBrowser()
 	secure_random_fill(m_aTokenSeed, sizeof(m_aTokenSeed));
 
 	m_pDDNetInfo = nullptr;
+	m_pInfclassInfo = nullptr;
 }
 
 CServerBrowser::~CServerBrowser()
@@ -78,6 +79,9 @@ CServerBrowser::~CServerBrowser()
 	free(m_ppServerlist);
 	free(m_pSortedServerlist);
 	json_value_free(m_pDDNetInfo);
+
+	if(m_pInfclassInfo)
+		json_value_free(m_pInfclassInfo);
 
 	delete m_pHttp;
 	m_pHttp = nullptr;
@@ -1316,6 +1320,26 @@ void CServerBrowser::LoadDDNetInfoJson()
 	}
 }
 
+void CServerBrowser::LoadInfclassInfoJson()
+{
+	void *pBuf;
+	unsigned Length;
+	if(!m_pStorage->ReadFile(INFCLASS_INFO, IStorage::TYPE_SAVE, &pBuf, &Length))
+		return;
+	
+	json_value_free(m_pInfclassInfo);
+	
+	m_pInfclassInfo = json_parse((json_char *)pBuf, Length);
+	
+	free(pBuf);
+	
+	if(m_pInfclassInfo && m_pInfclassInfo->type != json_object)
+	{
+		json_value_free(m_pInfclassInfo);
+		m_pInfclassInfo = nullptr;
+	}
+}
+
 void CServerBrowser::UpdateServerFilteredPlayers(CServerInfo *pInfo) const
 {
 	pInfo->m_NumFilteredPlayers = g_Config.m_BrFilterSpectators ? pInfo->m_NumPlayers : pInfo->m_NumClients;
@@ -1384,6 +1408,13 @@ const json_value *CServerBrowser::LoadDDNetInfo()
 	LoadDDNetRanks();
 
 	return m_pDDNetInfo;
+}
+
+const json_value *CServerBrowser::LoadInfclassInfo()
+{
+	LoadInfclassInfoJson();
+
+	return m_pInfclassInfo;
 }
 
 bool CServerBrowser::IsRefreshing() const

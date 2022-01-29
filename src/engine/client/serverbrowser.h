@@ -59,7 +59,9 @@ public:
 	void RecheckOfficial();
 	void LoadDDNetServers();
 	void LoadDDNetInfoJson();
+	void LoadInfclassInfoJson();
 	const json_value *LoadDDNetInfo();
+	const json_value *LoadInfclassInfo();
 	void UpdateServerFilteredPlayers(CServerInfo *pInfo) const;
 	void UpdateServerFriends(CServerInfo *pInfo) const;
 	CServerInfo::ERankState HasRank(const char *pMap);
@@ -113,6 +115,7 @@ private:
 	int m_OwnLocation = CServerInfo::LOC_UNKNOWN;
 
 	json_value *m_pDDNetInfo;
+	json_value *m_pInfclassInfo;
 
 	CServerEntry *m_pFirstReqServer; // request list
 	CServerEntry *m_pLastReqServer;
