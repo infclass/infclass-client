@@ -3474,8 +3474,8 @@ IGraphics::CTextureHandle *CGameClient::GetInfclassTexturePtrForDamageType(DAMAG
 		return &m_InfclassSkin.m_SpriteSoldierBomb;
 	case DAMAGE_TYPE::SCIENTIST_MINE:
 		return &m_InfclassSkin.m_SpriteScientistMine;
-//	case DAMAGE_TYPE::BIOLOGIST_MINE:
-//		return &m_InfclassSkin.m_SpriteBiologistMine;
+	case DAMAGE_TYPE::BIOLOGIST_MINE:
+		return &m_InfclassSkin.m_SpriteBiologistMine;
 	case DAMAGE_TYPE::MERCENARY_BOMB:
 		return &m_InfclassSkin.m_SpriteMercenaryBomb;
 //	case DAMAGE_TYPE::WHITE_HOLE:
