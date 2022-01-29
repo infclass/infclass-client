@@ -392,6 +392,8 @@ public:
 	void OnWindowResize();
 	void OnLanguageChange();
 	void OnCursorMove(float X, float Y);
+	static const char *ReplaceHardcodedGameName(char *pDest, const char *pSrc, int DestSize);
+	static const char *ReplaceHardcodedGameName(const char *pSrc);
 
 	void SetEnabled(bool Enabled) { m_Enabled = Enabled; }
 	bool Enabled() const { return m_Enabled; }
