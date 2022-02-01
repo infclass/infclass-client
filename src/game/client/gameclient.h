@@ -281,6 +281,10 @@ public:
 	int m_ServerMode;
 	CGameInfo m_GameInfo;
 
+	int m_TimeLimitInSeconds;
+	int m_InfClassHeroGiftTick;
+	int m_InfclassDataVersion;
+
 	int m_DemoSpecID;
 
 	vec2 m_LocalCharacterPos;
@@ -358,6 +362,8 @@ public:
 		int m_InfClassPlayerFlags;
 		int m_InfClassPlayerClass;
 		bool m_InfClassCustomSkin;
+
+		int m_InfClassClassData1;
 
 		char m_aName[MAX_NAME_LENGTH];
 		char m_aClan[MAX_CLAN_LENGTH];
@@ -798,7 +804,8 @@ private:
 
 	vec2 GetSmoothPos(int ClientID);
 	void ProcessInfClassPlayerInfo(int ClientID, const CNetObj_InfClassPlayer *pPlayerData);
-
+	void ProcessInfClassClassInfo(int ClientID, const CNetObj_InfClassClassInfo *pClassInfo);
+	void ProcessInfClassGameInfo(const CNetObj_InfClassGameInfo *pGameInfo);
 	int m_PredictedDummyID;
 	int m_IsDummySwapping;
 	CCharOrder m_CharOrder;
