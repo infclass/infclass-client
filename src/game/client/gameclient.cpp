@@ -1122,6 +1122,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	bool Race;
 	bool FastCap;
 	bool FNG;
+	bool Infclass;
 	bool DDRace;
 	bool DDNet;
 	bool BlockWorlds;
@@ -1135,6 +1136,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 		Race = str_find_nocase(pGameType, "race") || str_find_nocase(pGameType, "fastcap");
 		FastCap = str_find_nocase(pGameType, "fastcap");
 		FNG = str_find_nocase(pGameType, "fng");
+		Infclass = str_find_nocase(pGameType, "InfClass") || str_find_nocase(pGameType, "InfClassR");
 		DDRace = str_find_nocase(pGameType, "ddrace") || str_find_nocase(pGameType, "mkrace");
 		DDNet = str_find_nocase(pGameType, "ddracenet") || str_find_nocase(pGameType, "ddnet");
 		BlockWorlds = str_startswith(pGameType, "bw  ") || str_comp_nocase(pGameType, "bw") == 0;
@@ -1145,9 +1147,11 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	}
 	else
 	{
+		const char *pGameType = pFallbackServerInfo->m_aGameType;
 		Race = Flags & GAMEINFOFLAG_GAMETYPE_RACE;
 		FastCap = Flags & GAMEINFOFLAG_GAMETYPE_FASTCAP;
 		FNG = Flags & GAMEINFOFLAG_GAMETYPE_FNG;
+		Infclass = str_find_nocase(pGameType, "InfClass") || str_find_nocase(pGameType, "InfClassR");
 		DDRace = Flags & GAMEINFOFLAG_GAMETYPE_DDRACE;
 		DDNet = Flags & GAMEINFOFLAG_GAMETYPE_DDNET;
 		BlockWorlds = Flags & GAMEINFOFLAG_GAMETYPE_BLOCK_WORLDS;
@@ -1186,6 +1190,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	Info.m_EntitiesVanilla = Vanilla;
 	Info.m_EntitiesBW = BlockWorlds;
 	Info.m_Race = Race;
+	Info.m_InfClass = Infclass;
 	Info.m_DontMaskEntities = !DDNet;
 	Info.m_AllowXSkins = false;
 	Info.m_EntitiesFDDrace = FDDrace;
