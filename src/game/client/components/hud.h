@@ -54,6 +54,7 @@ class CHud : public CComponent
 	void RenderHealthAndAmmo(const CNetObj_Character *pCharacter);
 	void RenderStatusIcons(int ClientID);
 	void RenderObjectOwnerIcons(int ClientID);
+	void RenderClassExtraHud(int ClientID);
 
 	void RenderGameTimer();
 	void RenderPauseNotification();
@@ -64,6 +65,7 @@ class CHud : public CComponent
 	void RenderLocalTime(float x);
 
 	void MapscreenToGroup(float CenterX, float CenterY, struct CMapItemGroup *PGroup);
+	void FormatTimerText(char *pDest, int DestSize, int Ticks);
 
 public:
 	CHud();
