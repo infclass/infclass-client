@@ -1074,6 +1074,8 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	{
 		Info.m_EntitiesFDDrace = Flags2 & GAMEINFOFLAG2_ENTITIES_FDDRACE;
 	}
+
+	Info.m_InfClass = Infclass;
 	return Info;
 }
 
