@@ -632,6 +632,9 @@ void CGameClient::OnReset()
 	m_DummyFire = 0;
 	m_ReceivedDDNetPlayer = false;
 
+	m_InfClassHeroGiftTick = -1;
+	m_InfclassGameInfoVersion = 0;
+
 	m_Teams.Reset();
 	m_GameWorld.Clear();
 	m_GameWorld.m_WorldConfig.m_InfiniteAmmo = true;
@@ -1687,6 +1690,20 @@ void CGameClient::OnNewSnapshot()
 					ProcessInfClassPlayerInfo(Item.m_Id, pPlayerData);
 				}
 			}
+			else if(Item.m_Type == NETOBJTYPE_INFCLASSCLASSINFO)
+			{
+				const CNetObj_InfClassClassInfo *pClassInfo = (const CNetObj_InfClassClassInfo *)Item.m_pData;
+
+				if(Item.m_Id < MAX_CLIENTS)
+				{
+					ProcessInfClassClassInfo(Item.m_Id, pClassInfo);
+				}
+			}
+			else if(Item.m_Type == NETOBJTYPE_INFCLASSGAMEINFO)
+			{
+				const CNetObj_InfClassGameInfo *pGameInfo = (const CNetObj_InfClassGameInfo *)Item.m_pData;
+				ProcessInfClassGameInfo(pGameInfo);
+			}
 			else if(Item.m_Type == NETOBJTYPE_DDNETCHARACTER)
 			{
 				const CNetObj_DDNetCharacter *pCharacterData = (const CNetObj_DDNetCharacter *)Item.m_pData;
@@ -2454,6 +2471,8 @@ void CGameClient::CClientData::Reset()
 	m_InfClassPlayerFlags = 0;
 	m_InfClassPlayerClass = -1;
 	m_InfClassCustomSkin = false;
+
+	m_InfClassClassData1 = 0;
 
 	m_Solo = false;
 	m_Jetpack = false;
@@ -3230,6 +3249,19 @@ void CGameClient::ProcessInfClassPlayerInfo(int ClientId, const CNetObj_InfClass
 	}
 
 	pClient->UpdateRenderInfo(IsTeamPlay(), g_Config.m_ClDummy);
+}
+
+void CGameClient::ProcessInfClassClassInfo(int ClientId, const CNetObj_InfClassClassInfo *pClassInfo)
+{
+	CClientData *pClient = &m_aClients[ClientId];
+	pClient->m_InfClassClassData1 = pClassInfo->m_Data1;
+}
+
+void CGameClient::ProcessInfClassGameInfo(const CNetObj_InfClassGameInfo *pGameInfo)
+{
+	m_InfclassGameInfoVersion = pGameInfo->m_Version;
+	m_TimeLimitInSeconds = pGameInfo->m_TimeLimitInSeconds;
+	m_InfClassHeroGiftTick = pGameInfo->m_HeroGiftTick;
 }
 
 void CGameClient::Echo(const char *pString)
