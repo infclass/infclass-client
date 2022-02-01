@@ -110,6 +110,8 @@ void CGameClient::OnConsoleInit()
 	m_All.Add(&m_CountryFlags);
 	m_All.Add(&m_MapImages);
 	m_All.Add(&m_Effects); // doesn't render anything, just updates effects
+	m_All.Add(&m_InfCBinds);
+	m_All.Add(&m_InfCBinds.m_SpecialBinds);
 	m_All.Add(&m_Binds);
 	m_All.Add(&m_Binds.m_SpecialBinds);
 	m_All.Add(&m_Controls);
@@ -150,6 +152,7 @@ void CGameClient::OnConsoleInit()
 
 	// build the input stack
 	m_Input.Add(&CMenus::m_Binder); // this will take over all input when we want to bind a key
+	m_Input.Add(&m_InfCBinds.m_SpecialBinds);
 	m_Input.Add(&m_Binds.m_SpecialBinds);
 	m_Input.Add(&m_GameConsole);
 	m_Input.Add(&m_Chat); // chat has higher prio due to tha you can quit it by pressing esc
@@ -158,6 +161,7 @@ void CGameClient::OnConsoleInit()
 	m_Input.Add(&m_Spectator);
 	m_Input.Add(&m_Emoticon);
 	m_Input.Add(&m_Controls);
+	m_Input.Add(&m_InfCBinds);
 	m_Input.Add(&m_Binds);
 
 	// add the some console commands
