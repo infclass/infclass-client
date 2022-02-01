@@ -264,6 +264,19 @@ Objects = [
 		NetIntRange("m_Class", -1, 255),
 	]),
 
+	NetObjectEx("InfClassGameInfo", "gameinfo@infclass", [
+		NetIntAny("m_Version"),
+		NetIntAny("m_Flags"),
+		NetIntRange("m_TimeLimitInSeconds", 0, 'max_int'),
+		NetIntAny("m_HeroGiftTick"),
+	]),
+
+	NetObjectEx("InfClassClassInfo", "classinfo@infclass", [
+		NetIntAny("m_Flags"),
+		NetIntRange("m_Class", -1, 255),
+		NetIntAny("m_Data1"),
+	]),
+
 	NetObjectEx("DDNetCharacter", "character@netobj.ddnet.tw", [
 		NetIntAny("m_Flags", 0),
 		NetTick("m_FreezeEnd", 0),
