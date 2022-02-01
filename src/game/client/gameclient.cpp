@@ -1123,6 +1123,8 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 		Info.m_HudAmmo = Flags2 & GAMEINFOFLAG2_HUD_AMMO;
 		Info.m_HudDDRace = Flags2 & GAMEINFOFLAG2_HUD_DDRACE;
 	}
+
+	Info.m_InfClass = Infclass;
 	return Info;
 }
 
