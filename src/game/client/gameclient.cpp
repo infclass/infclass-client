@@ -1131,6 +1131,8 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	{
 		Info.m_NoWeakHookAndBounce = Flags2 & GAMEINFOFLAG2_NO_WEAK_HOOK;
 	}
+
+	Info.m_InfClass = Infclass;
 	return Info;
 }
 
