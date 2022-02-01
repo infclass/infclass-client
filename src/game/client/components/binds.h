@@ -12,6 +12,7 @@ class IConfigManager;
 
 class CBinds : public CComponent
 {
+protected:
 	int GetKeyId(const char *pKeyName);
 
 	static void ConBind(IConsole::IResult *pResult, void *pUserData);
@@ -68,7 +69,7 @@ public:
 
 	void SetDDRaceBinds(bool FreeOnly);
 
-private:
+protected:
 	char *m_aapKeyBindings[MODIFIER_COMBINATION_COUNT][KEY_LAST];
 };
 #endif
