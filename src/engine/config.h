@@ -20,6 +20,7 @@ public:
 	virtual void RegisterCallback(SAVECALLBACKFUNC pfnFunc, void *pUserData) = 0;
 
 	virtual void WriteLine(const char *pLine) = 0;
+	virtual void InfClassWriteLine(const char *pLine) = 0;
 };
 
 extern IConfigManager *CreateConfigManager();
