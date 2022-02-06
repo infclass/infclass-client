@@ -7,6 +7,7 @@
 #include <engine/config.h>
 
 #define CONFIG_FILE "settings_ddnet.cfg"
+#define INFC_CONFIG_FILE "settings_infclass.cfg"
 #define AUTOEXEC_FILE "autoexec.cfg"
 #define AUTOEXEC_CLIENT_FILE "autoexec_client.cfg"
 #define AUTOEXEC_SERVER_FILE "autoexec_server.cfg"
@@ -59,7 +60,9 @@ class CConfigManager : public IConfigManager
 
 	class IStorage *m_pStorage;
 	IOHANDLE m_ConfigFile;
+	IOHANDLE m_InfClassConfigFile;
 	bool m_Failed;
+	bool m_InfClassFailed;
 	CCallback m_aCallbacks[MAX_CALLBACKS];
 	int m_NumCallbacks;
 
@@ -75,6 +78,7 @@ public:
 	void RegisterCallback(SAVECALLBACKFUNC pfnFunc, void *pUserData) override;
 
 	void WriteLine(const char *pLine) override;
+	void InfClassWriteLine(const char *pLine) override;
 };
 
 #endif

@@ -78,6 +78,17 @@ bool CConfigManager::Save()
 
 	m_Failed = false;
 
+	char aInfCConfigFileTmp[IO_MAX_PATH_LENGTH];
+	m_InfClassConfigFile = m_pStorage->OpenFile(IStorage::FormatTmpPath(aInfCConfigFileTmp, sizeof(aInfCConfigFileTmp), INFC_CONFIG_FILE), IOFLAG_WRITE, IStorage::TYPE_SAVE);
+
+	if(!m_InfClassConfigFile)
+	{
+		dbg_msg("config", "ERROR: opening %s failed", aConfigFileTmp);
+		return false;
+	}
+
+	m_InfClassFailed = false;
+
 	char aLineBuf[1024 * 2];
 	char aEscapeBuf[1024 * 2];
 
@@ -118,7 +129,16 @@ bool CConfigManager::Save()
 	if(io_close(m_ConfigFile) != 0)
 		m_Failed = true;
 
+	if(io_sync(m_InfClassConfigFile) != 0)
+	{
+		m_InfClassFailed = true;
+	}
+
+	if(io_close(m_InfClassConfigFile) != 0)
+		m_InfClassFailed = true;
+
 	m_ConfigFile = 0;
+	m_InfClassConfigFile = 0;
 
 	if(m_Failed)
 	{
@@ -126,9 +146,21 @@ bool CConfigManager::Save()
 		return false;
 	}
 
+	if(m_InfClassFailed)
+	{
+		dbg_msg("config", "ERROR: writing to %s failed", aInfCConfigFileTmp);
+		return false;
+	}
+
 	if(!m_pStorage->RenameFile(aConfigFileTmp, CONFIG_FILE, IStorage::TYPE_SAVE))
 	{
 		dbg_msg("config", "ERROR: renaming %s to " CONFIG_FILE " failed", aConfigFileTmp);
+		return false;
+	}
+
+	if(!m_pStorage->RenameFile(aInfCConfigFileTmp, INFC_CONFIG_FILE, IStorage::TYPE_SAVE))
+	{
+		dbg_msg("config", "ERROR: renaming %s to " INFC_CONFIG_FILE " failed", aInfCConfigFileTmp);
 		return false;
 	}
 
@@ -153,6 +185,18 @@ void CConfigManager::WriteLine(const char *pLine)
 		io_write_newline(m_ConfigFile) != 1)
 #endif
 		m_Failed = true;
+}
+
+void CConfigManager::InfClassWriteLine(const char *pLine)
+{
+	if(!m_InfClassConfigFile ||
+		io_write(m_InfClassConfigFile, pLine, str_length(pLine)) != static_cast<unsigned>(str_length(pLine)) ||
+#if defined(CONF_FAMILY_WINDOWS)
+		io_write_newline(m_InfClassConfigFile) != 2)
+#else
+		io_write_newline(m_InfClassConfigFile) != 1)
+#endif
+		m_InfClassFailed = true;
 }
 
 IConfigManager *CreateConfigManager() { return new CConfigManager; }

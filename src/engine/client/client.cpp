@@ -4704,6 +4704,14 @@ int main(int argc, const char **argv)
 		pConsole->ExecuteFile(CONFIG_FILE);
 	}
 
+	// execute infclass file
+	File = pStorage->OpenFile(INFC_CONFIG_FILE, IOFLAG_READ, IStorage::TYPE_ALL);
+	if(File)
+	{
+		io_close(File);
+		pConsole->ExecuteFile(INFC_CONFIG_FILE);
+	}
+
 	// execute autoexec file
 	File = pStorage->OpenFile(AUTOEXEC_CLIENT_FILE, IOFLAG_READ, IStorage::TYPE_ALL);
 	if(File)
