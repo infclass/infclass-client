@@ -495,7 +495,8 @@ void CPlayers::RenderPlayer(
 
 	// draw gun
 	{
-		if(!(RenderInfo.m_TeeRenderFlags & TEE_NO_WEAPON))
+		bool HasWeapon = PlayerClass != PLAYERCLASS_BOOMER;
+		if(HasWeapon && !(RenderInfo.m_TeeRenderFlags & TEE_NO_WEAPON))
 		{
 			Graphics()->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			Graphics()->QuadsSetRotation(State.GetAttach()->m_Angle * pi * 2 + Angle);
