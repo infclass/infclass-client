@@ -4468,6 +4468,14 @@ int main(int argc, const char **argv)
 		pConsole->ExecuteFile(CONFIG_FILE);
 	}
 
+	// execute infclass file
+	File = pStorage->OpenFile(INFC_CONFIG_FILE, IOFLAG_READ, IStorage::TYPE_ALL);
+	if(File)
+	{
+		io_close(File);
+		pConsole->ExecuteFile(INFC_CONFIG_FILE);
+	}
+
 #if defined(CONF_FAMILY_WINDOWS)
 	if(g_Config.m_ClShowConsole)
 	{
