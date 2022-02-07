@@ -43,7 +43,7 @@ void CMenus::RenderStartMenu(CUIRect MainView)
 	static int s_DiscordButton;
 	if(DoButton_Menu(&s_DiscordButton, Localize("Discord"), 0, &Button, 0, CUI::CORNER_ALL, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f), vec4(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
-		if(!open_link(Localize("https://ddnet.tw/discord")))
+		if(!open_link(Localize("https://infclass.github.io/discord")))
 		{
 			dbg_msg("menus", "couldn't open link");
 		}
@@ -67,7 +67,7 @@ void CMenus::RenderStartMenu(CUIRect MainView)
 	static int s_WebsiteButton;
 	if(DoButton_Menu(&s_WebsiteButton, Localize("Website"), 0, &Button, 0, CUI::CORNER_ALL, 5.0f, 0.0f, vec4(0.0f, 0.0f, 0.0f, 0.5f), vec4(0.0f, 0.0f, 0.0f, 0.25f)))
 	{
-		if(!open_link("https://ddnet.tw/"))
+		if(!open_link("https://infclass.github.io"))
 		{
 			dbg_msg("menus", "couldn't open link");
 		}
