@@ -901,6 +901,23 @@ static CKeyInfo gs_aInfCKeys[] =
 	{"Bunker is clear", "say_team_location bunker clear", 0, 0},
 	{"Bonus zone is clear", "say_team_location bonuszone clear", 0, 0},
 	{"Spawn is clear", "say_team_location infspawn clear", 0, 0},
+
+	{"\"RUN!\"", "say_message run", 0, 0},
+	{"\"Ghost!\"", "say_message ghost", 0, 0},
+	{"\"Help!\"", "say_message help", 0, 0},
+	{"\"Boom (hammer) fly\"", "say_message bfhf", 0, 0},
+	{"\"Where?\"", "say_message where", 0, 0},
+	{"\"Clear!\"", "say_message clear", 0, 0},
+	{"\"Call witch!\"", "say_message witch", 0, 0},
+	{"\"Taxi!\"", "say_message taxi", 0, 0},
+	{"\"Need a Taxi!\"", "say_message asktaxi", 0, 0},
+	{"\"Anyone needs a Taxi?\"", "say_message suggesttaxi", 0, 0},
+	{"\"Please find a flag!\"", "say_message askflag", 0, 0},
+	{"\"Anyone needs a flag?\"", "say_message suggestflag", 0, 0},
+	{"\"Medic!\"", "say_message askhealing", 0, 0},
+	{"\"Who needs a healing?\"", "say_message suggesthealing", 0, 0},
+
+	{"Call witch", "witch", 0, 0},
 };
 
 void CMenus::DoSettingsControlsButtons(int Start, int Stop, CUIRect View)
@@ -1349,10 +1366,11 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 	static int s_OldSelected = 0;
 	// Hacky values: Size of 10.0f per item for smoother scrolling, 72 elements
 	// fits the current size of controls settings
-	UiDoListboxStart(&s_ControlsList, &MainView, 10.0f, Localize("Controls"), "", 56, 1, s_SelectedControl, s_ScrollValue);
+	UiDoListboxStart(&s_ControlsList, &MainView, 10.0f, Localize("Controls"), "", 72, 1, s_SelectedControl, s_ScrollValue);
 
 	CUIRect LeftRect, RightRect;
 	CUIRect ReportLocationSettings, ReportLocationClearSettings;
+	CUIRect TeamChatSettings, ExtraCommandsSettings;
 	CListboxItem Item = UiDoListboxNextItem(&s_OldSelected, false, false, true);
 	Item.m_Rect.HSplitTop(10.0f, 0, &Item.m_Rect);
 	Item.m_Rect.VSplitMid(&LeftRect, &RightRect);
@@ -1361,6 +1379,8 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 	RightRect.VMargin(5.0f, &RightRect);
 
 	constexpr int LocationKeys = static_cast<int>(CInfCCommands::ELocation::Count);
+	constexpr int TeamChatKeys = static_cast<int>(CInfCCommands::EInfoMessage::Count);
+	constexpr int ExtraCommandKeys = 1;
 
 	int LastButton = GenericKeysNumber;
 
@@ -1397,6 +1417,50 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 
 		DoSettingsControlsButtons(LastButton, LastButton + LocationKeys, ReportLocationClearSettings);
 		LastButton += LocationKeys;
+	}
+
+	{
+		LeftRect.HSplitTop(ButtonHeight * TeamChatKeys + SectionHeaderHeight, &TeamChatSettings, &LeftRect);
+		LeftRect.HSplitTop(10.0f, nullptr, &LeftRect);
+
+		RenderTools()->DrawUIRect(&TeamChatSettings, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		TeamChatSettings.VMargin(10.0f, &TeamChatSettings);
+
+		TextRender()->Text(0, TeamChatSettings.x, TeamChatSettings.y + (14.0f + 5.0f + 10.0f - 14.0f) / 2.f, 14.0f, Localize("Team chat"), -1.0f);
+
+		TeamChatSettings.HSplitTop(14.0f + 5.0f + 10.0f, 0, &TeamChatSettings);
+
+		DoSettingsControlsButtons(LastButton, LastButton + TeamChatKeys, TeamChatSettings);
+		LastButton += TeamChatKeys;
+	}
+
+	{
+		RightRect.HSplitTop(ButtonHeight * ExtraCommandKeys + SectionHeaderHeight, &ExtraCommandsSettings, &RightRect);
+		RightRect.HSplitTop(10.0f, nullptr, &RightRect);
+
+		RenderTools()->DrawUIRect(&ExtraCommandsSettings, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		ExtraCommandsSettings.VMargin(10.0f, &ExtraCommandsSettings);
+
+		TextRender()->Text(0, ExtraCommandsSettings.x, ExtraCommandsSettings.y + (14.0f + 5.0f + 10.0f - 14.0f) / 2.f, 14.0f, Localize("Extra commands"), -1.0f);
+
+		ExtraCommandsSettings.HSplitTop(14.0f + 5.0f + 10.0f, 0, &ExtraCommandsSettings);
+
+		DoSettingsControlsButtons(LastButton, LastButton + ExtraCommandKeys, ExtraCommandsSettings);
+		LastButton += ExtraCommandKeys;
+	}
+
+	CUIRect ResetButton;
+
+	// defaults
+	{
+		LeftRect.HSplitTop(40.0f, &ResetButton, 0);
+		RenderTools()->DrawUIRect(&ResetButton, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		ResetButton.HMargin(10.0f, &ResetButton);
+		ResetButton.VMargin(30.0f, &ResetButton);
+		ResetButton.HSplitTop(20.0f, &ResetButton, 0);
+		static int s_DefaultButton = 100;
+		if(DoButton_Menu((void *)&s_DefaultButton, Localize("Reset to defaults"), 0, &ResetButton))
+			m_pClient->m_InfCBinds.SetDefaults();
 	}
 
 	UiDoListboxEnd(&s_ScrollValue, 0);
