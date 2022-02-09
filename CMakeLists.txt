@@ -2195,6 +2195,8 @@ if(CLIENT)
     components/hud.h
     components/infc_binds.cpp
     components/infc_binds.h
+    components/infc_commands.cpp
+    components/infc_commands.h
     components/items.cpp
     components/items.h
     components/killmessages.cpp
