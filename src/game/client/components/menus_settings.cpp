@@ -873,6 +873,34 @@ static const int GenericKeysNumber = std::size(gs_aKeys);
 
 static CKeyInfo gs_aInfCKeys[] =
 {
+	// Localize - these strings are localized within CLocConstString
+	{"Bottom/left", "say_team_location bottomleft", 0, 0},
+	{"Bottom", "say_team_location bottom", 0, 0},
+	{"Bottom/right", "say_team_location bottomright", 0, 0},
+	{"Left", "say_team_location left", 0, 0},
+	{"Middle", "say_team_location middle", 0, 0},
+	{"Right", "say_team_location right", 0, 0},
+	{"Top/Left", "say_team_location topleft", 0, 0},
+	{"Top", "say_team_location top", 0, 0},
+	{"Top/Right", "say_team_location topright", 0, 0},
+
+	{"Bunker", "say_team_location bunker", 0, 0},
+	{"Bonus zone", "say_team_location bonuszone", 0, 0},
+	{"Spawn", "say_team_location infspawn", 0, 0},
+
+	{"Bottom/left is clear", "say_team_location bottomleft clear", 0, 0},
+	{"Bottom is clear", "say_team_location bottom clear", 0, 0},
+	{"Bottom/right is clear", "say_team_location bottomright clear", 0, 0},
+	{"Left is clear", "say_team_location left clear", 0, 0},
+	{"Middle is clear", "say_team_location middle clear", 0, 0},
+	{"Right is clear", "say_team_location right clear", 0, 0},
+	{"Top/Left is clear", "say_team_location topleft clear", 0, 0},
+	{"Top is clear", "say_team_location top clear", 0, 0},
+	{"Top/Right is clear", "say_team_location topright clear", 0, 0},
+
+	{"Bunker is clear", "say_team_location bunker clear", 0, 0},
+	{"Bonus zone is clear", "say_team_location bonuszone clear", 0, 0},
+	{"Spawn is clear", "say_team_location infspawn clear", 0, 0},
 };
 
 void CMenus::DoSettingsControlsButtons(int Start, int Stop, CUIRect View)
@@ -1325,7 +1353,6 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 
 	CUIRect LeftRect, RightRect;
 	CUIRect ReportLocationSettings, ReportLocationClearSettings;
-	CUIRect TeamChatSettings, ExtraCommandsSettings;
 	CListboxItem Item = UiDoListboxNextItem(&s_OldSelected, false, false, true);
 	Item.m_Rect.HSplitTop(10.0f, 0, &Item.m_Rect);
 	Item.m_Rect.VSplitMid(&LeftRect, &RightRect);
@@ -1333,10 +1360,46 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 	LeftRect.VMargin(5.0f, &LeftRect);
 	RightRect.VMargin(5.0f, &RightRect);
 
+	constexpr int LocationKeys = static_cast<int>(CInfCCommands::ELocation::Count);
+
 	int LastButton = GenericKeysNumber;
 
 	float SectionHeaderHeight = 10 + 14 + 10;
 	float ButtonHeight = 22;
+
+	// Report location settings
+	{
+		LeftRect.HSplitTop(ButtonHeight * LocationKeys + SectionHeaderHeight, &ReportLocationSettings, &LeftRect);
+		LeftRect.HSplitTop(10.0f, nullptr, &LeftRect);
+
+		RenderTools()->DrawUIRect(&ReportLocationSettings, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		ReportLocationSettings.VMargin(10.0f, &ReportLocationSettings);
+
+		TextRender()->Text(0, ReportLocationSettings.x, ReportLocationSettings.y + (14.0f + 5.0f + 10.0f - 14.0f) / 2.f, 14.0f, Localize("Report location"), -1.0f);
+
+		ReportLocationSettings.HSplitTop(14.0f + 5.0f + 10.0f, 0, &ReportLocationSettings);
+
+		DoSettingsControlsButtons(LastButton, LastButton + LocationKeys, ReportLocationSettings);
+		LastButton += LocationKeys;
+	}
+
+	// Report location clearsettings
+	{
+		RightRect.HSplitTop(ButtonHeight * LocationKeys + SectionHeaderHeight, &ReportLocationClearSettings, &RightRect);
+		RightRect.HSplitTop(10.0f, nullptr, &RightRect);
+
+		RenderTools()->DrawUIRect(&ReportLocationClearSettings, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		ReportLocationClearSettings.VMargin(10.0f, &ReportLocationClearSettings);
+
+		TextRender()->Text(0, ReportLocationClearSettings.x, ReportLocationClearSettings.y + (14.0f + 5.0f + 10.0f - 14.0f) / 2.f, 14.0f, Localize("Report location is clear"), -1.0f);
+
+		ReportLocationClearSettings.HSplitTop(14.0f + 5.0f + 10.0f, 0, &ReportLocationClearSettings);
+
+		DoSettingsControlsButtons(LastButton, LastButton + LocationKeys, ReportLocationClearSettings);
+		LastButton += LocationKeys;
+	}
+
+	UiDoListboxEnd(&s_ScrollValue, 0);
 }
 
 int CMenus::RenderDropDown(int &CurDropDownState, CUIRect *pRect, int CurSelection, const void **pIDs, const char **pStr, int PickNum, const void *pID, float &ScrollVal)
