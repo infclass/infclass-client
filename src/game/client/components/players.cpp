@@ -550,8 +550,6 @@ void CPlayers::RenderPlayer(
 		RenderTools()->RenderTee(&State, &Ghost, Player.m_Emote, Direction, GhostPosition, 0.5f); // render ghost
 	}
 
-	RenderInfo.m_Size = 64.0f; // force some settings
-
 	Graphics()->SetColor(1.0f, 1.0f, 1.0f, Alpha);
 	Graphics()->QuadsSetRotation(0);
 	int ShowDirection = g_Config.m_ClShowDirection;
