@@ -138,6 +138,7 @@ void CGameClient::OnConsoleInit()
 	m_All.Add(&m_Emoticon);
 	m_All.Add(&m_KillMessages);
 	m_All.Add(&m_Chat);
+	m_All.Add(&m_InfCCommands);
 	m_All.Add(&m_Broadcast);
 	m_All.Add(&m_DebugHud);
 	m_All.Add(&m_Scoreboard);
