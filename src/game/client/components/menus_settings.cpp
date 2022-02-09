@@ -862,7 +862,7 @@ void CMenus::UiDoGetButtons(int Start, int Stop, CUIRect View, CUIRect ScopeView
 		CKeyInfo &Key = gs_aKeys[i];
 		CUIRect Button, Label;
 		View.HSplitTop(20.0f, &Button, &View);
-		Button.VSplitLeft(135.0f, &Label, &Button);
+		Button.VSplitLeft(160.0f, &Label, &Button);
 
 		if(Button.y >= ScopeView.y && Button.y + Button.h <= ScopeView.y + ScopeView.h)
 		{
