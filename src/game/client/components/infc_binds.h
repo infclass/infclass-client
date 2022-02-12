@@ -18,6 +18,6 @@ public:
 	virtual void OnConsoleInit();
 	virtual bool OnInput(IInput::CEvent Event);
 
-	void SetDefaults();
+	void LoadPreset();
 };
 #endif
