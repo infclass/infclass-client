@@ -1366,7 +1366,7 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 	static int s_OldSelected = 0;
 	// Hacky values: Size of 10.0f per item for smoother scrolling, 72 elements
 	// fits the current size of controls settings
-	UiDoListboxStart(&s_ControlsList, &MainView, 10.0f, Localize("Controls"), "", 72, 1, s_SelectedControl, s_ScrollValue);
+	UiDoListboxStart(&s_ControlsList, &MainView, 10.0f, Localize("Controls"), "", 78, 1, s_SelectedControl, s_ScrollValue);
 
 	CUIRect LeftRect, RightRect;
 	CUIRect ReportLocationSettings, ReportLocationClearSettings;
@@ -1449,18 +1449,34 @@ void CMenus::RenderSettingsInfClassControls(CUIRect MainView)
 		LastButton += ExtraCommandKeys;
 	}
 
-	CUIRect ResetButton;
+	CUIRect UnsetAllButton;
 
 	// defaults
 	{
-		LeftRect.HSplitTop(40.0f, &ResetButton, 0);
-		RenderTools()->DrawUIRect(&ResetButton, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
-		ResetButton.HMargin(10.0f, &ResetButton);
-		ResetButton.VMargin(30.0f, &ResetButton);
-		ResetButton.HSplitTop(20.0f, &ResetButton, 0);
-		static int s_DefaultButton = 100;
-		if(DoButton_Menu((void *)&s_DefaultButton, Localize("Reset to defaults"), 0, &ResetButton))
-			m_pClient->m_InfCBinds.SetDefaults();
+		LeftRect.HSplitTop(40.0f, &UnsetAllButton, &LeftRect);
+		LeftRect.HSplitTop(10.0f, nullptr, &LeftRect);
+		RenderTools()->DrawUIRect(&UnsetAllButton, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		UnsetAllButton.HMargin(10.0f, &UnsetAllButton);
+		UnsetAllButton.VMargin(30.0f, &UnsetAllButton);
+		UnsetAllButton.HSplitTop(20.0f, &UnsetAllButton, 0);
+		static int s_UnsetAllButton = 100;
+		if(DoButton_Menu((void *)&s_UnsetAllButton, Localize("Unbind all"), 0, &UnsetAllButton))
+			m_pClient->m_InfCBinds.UnbindAll();
+	}
+
+	CUIRect LoadPresetButton;
+
+	// defaults
+	{
+		LeftRect.HSplitTop(40.0f, &LoadPresetButton, 0);
+		LeftRect.HSplitTop(10.0f, nullptr, &LeftRect);
+		RenderTools()->DrawUIRect(&LoadPresetButton, ColorRGBA(1, 1, 1, 0.25f), CUI::CORNER_ALL, 10.0f);
+		LoadPresetButton.HMargin(10.0f, &LoadPresetButton);
+		LoadPresetButton.VMargin(30.0f, &LoadPresetButton);
+		LoadPresetButton.HSplitTop(20.0f, &LoadPresetButton, 0);
+		static int s_LoadPresetButton = 100;
+		if(DoButton_Menu((void *)&s_LoadPresetButton, Localize("Load a preset"), 0, &LoadPresetButton))
+			m_pClient->m_InfCBinds.LoadPreset();
 	}
 
 	UiDoListboxEnd(&s_ScrollValue, 0);
