@@ -382,6 +382,9 @@ const CSkin *CSkins::Get(int Index)
 int CSkins::Find(const char *pName)
 {
 	const char *pSkinPrefix = m_aEventSkinPrefix[0] ? m_aEventSkinPrefix : g_Config.m_ClSkinPrefix;
+	if(GameClient()->m_GameInfo.m_InfClass)
+	{
+	}
 	if(g_Config.m_ClVanillaSkinsOnly && !IsVanillaSkin(pName))
 	{
 		return -1;
