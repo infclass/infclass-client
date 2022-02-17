@@ -307,27 +307,29 @@ void CItems::RenderInfclassObject(const CNetObj_InfClassObject *pCurrent, bool I
 	int SpecCID = m_pClient->m_Snap.m_SpecInfo.m_SpectatorID;
 	int CameraCID = m_pClient->m_Snap.m_SpecInfo.m_Active ? SpecCID : LocalCID;
 
+	vec2 Pos(pCurrent->m_X, pCurrent->m_Y);
+
 #if 1
 	if((CameraCID >= 0) && (pCurrent->m_Owner == CameraCID))
 	{
 		// Do not render the icon here, render it in HUD instead.
 		bool TakeSecondPos = (pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION) && (pCurrent->m_Y2 > pCurrent->m_Y);
-		vec2 Pos = TakeSecondPos ? vec2(pCurrent->m_X2, pCurrent->m_Y2) : vec2(pCurrent->m_X, pCurrent->m_Y);
+		vec2 IndicatorPos = TakeSecondPos ? vec2(pCurrent->m_X2, pCurrent->m_Y2) : Pos;
 
 		if(pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION)
 		{
 			float Offset = 24;
 			if(TakeSecondPos)
 			{
-				Pos += normalize(Pos - vec2(pCurrent->m_X, pCurrent->m_Y)) * Offset;
+				IndicatorPos += normalize(IndicatorPos - vec2(pCurrent->m_X, pCurrent->m_Y)) * Offset;
 			}
 			else
 			{
-				Pos += normalize(Pos - vec2(pCurrent->m_X2, pCurrent->m_Y2)) * Offset;
+				IndicatorPos += normalize(IndicatorPos - vec2(pCurrent->m_X2, pCurrent->m_Y2)) * Offset;
 			}
 		}
 		int &Icons = m_pClient->m_aClients[CameraCID].m_OwnerIcons;
-		m_pClient->m_aClients[CameraCID].m_aOwnerIconPositions[Icons] = Pos;
+		m_pClient->m_aClients[CameraCID].m_aOwnerIconPositions[Icons] = IndicatorPos;
 		++Icons;
 	}
 #else
@@ -337,9 +339,9 @@ void CItems::RenderInfclassObject(const CNetObj_InfClassObject *pCurrent, bool I
 		RenderInfo.m_Size = 32;
 
 		bool TakeSecondPos = (pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION) && (pCurrent->m_Y2 > pCurrent->m_Y);
-		vec2 Pos = TakeSecondPos ? vec2(pCurrent->m_X2, pCurrent->m_Y2) : vec2(pCurrent->m_X, pCurrent->m_Y);
+		vec2 IndicatorPos = TakeSecondPos ? vec2(pCurrent->m_X2, pCurrent->m_Y2) : Pos;
 		const vec2 Offset(0, pCurrent->m_Flags & INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION ? 16 : 0);
-		RenderTools()->RenderTee(CAnimState::GetIdle(), &RenderInfo, EMOTE_HAPPY, vec2(1, 0), Pos + Offset);
+		RenderTools()->RenderTee(CAnimState::GetIdle(), &RenderInfo, EMOTE_HAPPY, vec2(1, 0), IndicatorPos + Offset);
 	}
 #endif
 }
