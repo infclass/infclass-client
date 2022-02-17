@@ -1,6 +1,7 @@
 #include "notifications.h"
 
 #include <base/detect.h>
+#include <game/version.h>
 
 #if defined(CONF_PLATFORM_MACOS)
 // Code is in src/macos/notification.mm.
@@ -8,7 +9,7 @@
 #include <libnotify/notify.h>
 void NotificationsInit()
 {
-	notify_init("DDNet Client");
+	notify_init(GAME_NAME " Client");
 }
 void NotificationsUninit()
 {
