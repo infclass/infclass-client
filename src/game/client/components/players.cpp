@@ -440,6 +440,9 @@ void CPlayers::RenderPlayer(
 		// Don't do a moon walk outside the left border
 		WalkTime += 1;
 	}
+	if(PlayerClass == PLAYERCLASS_GHOST)
+		WalkTime = 0;
+
 	CAnimState State;
 	State.Set(&g_pData->m_aAnimations[ANIM_BASE], 0);
 
