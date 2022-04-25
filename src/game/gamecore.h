@@ -210,6 +210,8 @@ class CCharacterCore
 	std::map<int, std::vector<vec2>> *m_pTeleOuts;
 
 public:
+	static const float sc_PhysicalSize;
+	static const vec2 sc_PhysicalSizeVec2;
 	vec2 m_Pos;
 	vec2 m_Vel;
 	bool m_Hook;

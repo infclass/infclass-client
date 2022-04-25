@@ -56,16 +56,16 @@ bool CEntity::GetNearestAirPos(vec2 Pos, vec2 PrevPos, vec2 *pOutPos)
 	vec2 BlockCenter = vec2(round_to_int(Pos.x), round_to_int(Pos.y)) - PosInBlock + vec2(16.0f, 16.0f);
 
 	*pOutPos = vec2(BlockCenter.x + (PosInBlock.x < 16 ? -2.0f : 1.0f), Pos.y);
-	if(!GameServer()->Collision()->TestBox(*pOutPos, vec2(28.0f, 28.0f)))
+	if(!GameServer()->Collision()->TestBox(*pOutPos, CCharacterCore::sc_PhysicalSizeVec2))
 		return true;
 
 	*pOutPos = vec2(Pos.x, BlockCenter.y + (PosInBlock.y < 16 ? -2.0f : 1.0f));
-	if(!GameServer()->Collision()->TestBox(*pOutPos, vec2(28.0f, 28.0f)))
+	if(!GameServer()->Collision()->TestBox(*pOutPos, CCharacterCore::sc_PhysicalSizeVec2))
 		return true;
 
 	*pOutPos = vec2(BlockCenter.x + (PosInBlock.x < 16 ? -2.0f : 1.0f),
 		BlockCenter.y + (PosInBlock.y < 16 ? -2.0f : 1.0f));
-	return !GameServer()->Collision()->TestBox(*pOutPos, vec2(28.0f, 28.0f));
+	return !GameServer()->Collision()->TestBox(*pOutPos, CCharacterCore::sc_PhysicalSizeVec2);
 }
 
 bool CEntity::GetNearestAirPosPlayer(vec2 PlayerPos, vec2 *OutPos)
@@ -73,7 +73,7 @@ bool CEntity::GetNearestAirPosPlayer(vec2 PlayerPos, vec2 *OutPos)
 	for(int dist = 5; dist >= -1; dist--)
 	{
 		*OutPos = vec2(PlayerPos.x, PlayerPos.y - dist);
-		if(!GameServer()->Collision()->TestBox(*OutPos, vec2(28.0f, 28.0f)))
+		if(!GameServer()->Collision()->TestBox(*OutPos, CCharacterCore::sc_PhysicalSizeVec2))
 		{
 			return true;
 		}
