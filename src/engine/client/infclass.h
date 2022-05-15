@@ -1,7 +1,7 @@
 #ifndef ENGINE_CLIENT_INFCLASS_H
 #define ENGINE_CLIENT_INFCLASS_H
 
-#define INFCLASS_CLIENT_VERSION 130
+#define INFCLASS_CLIENT_VERSION 140
 
 #define INFC_UPDATES_URL "https://infclass.github.io/files"
 
