@@ -68,7 +68,29 @@ void CScoreboard::RenderGoals(float x, float y, float w)
 			str_format(aBuf, sizeof(aBuf), "%s: %d", Localize("Score limit"), m_pClient->m_Snap.m_pGameInfoObj->m_ScoreLimit);
 			TextRender()->Text(x + 10.0f, y + (h - 20.f) / 2.f, 20.0f, aBuf, -1.0f);
 		}
-		if(m_pClient->m_Snap.m_pGameInfoObj->m_TimeLimit)
+		if(m_pClient->m_TimeLimitInSeconds)
+		{
+			char aBuf[64];
+			int Min = m_pClient->m_TimeLimitInSeconds / 60;
+			int Sec = m_pClient->m_TimeLimitInSeconds % 60;
+			if(Sec)
+			{
+				if(Min)
+				{
+					str_format(aBuf, sizeof(aBuf), Localize("Time limit: %d min %02d sec"), Min, Sec);
+				}
+				else
+				{
+					str_format(aBuf, sizeof(aBuf), Localize("Time limit: %02d sec"), Sec);
+				}
+			}
+			else
+			{
+				str_format(aBuf, sizeof(aBuf), Localize("Time limit: %d min"), Min);
+			}
+			TextRender()->Text(x + 230.0f, y + (h - 20.f) / 2.f, 20.0f, aBuf, -1.0f);
+		}
+		else if(m_pClient->m_Snap.m_pGameInfoObj->m_TimeLimit)
 		{
 			char aBuf[64];
 			str_format(aBuf, sizeof(aBuf), Localize("Time limit: %d min"), m_pClient->m_Snap.m_pGameInfoObj->m_TimeLimit);
