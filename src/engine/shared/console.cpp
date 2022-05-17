@@ -1027,6 +1027,7 @@ void CConsole::Init()
 	}
 
 #include "config_variables.h"
+#include "infc_config_variables.h"
 
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_COL
