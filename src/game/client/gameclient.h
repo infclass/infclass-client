@@ -277,6 +277,7 @@ public:
 
 	int m_TimeLimitInSeconds;
 	int m_InfClassHeroGiftTick;
+	int m_InfclassDataVersion;
 
 	int m_DemoSpecID;
 
