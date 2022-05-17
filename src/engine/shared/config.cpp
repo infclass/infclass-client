@@ -33,6 +33,7 @@ void CConfigManager::Reset()
 #define MACRO_CONFIG_STR(Name, ScriptName, len, def, flags, desc) str_copy(g_Config.m_##Name, def, len);
 
 #include "config_variables.h"
+#include "infc_config_variables.h"
 
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_COL
@@ -56,6 +57,7 @@ void CConfigManager::Reset(const char *pScriptName)
 	};
 
 #include "config_variables.h"
+#include "infc_config_variables.h"
 
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_COL
@@ -113,6 +115,32 @@ bool CConfigManager::Save()
 	}
 
 #include "config_variables.h"
+
+#undef MACRO_CONFIG_INT
+#undef MACRO_CONFIG_COL
+#undef MACRO_CONFIG_STR
+
+#define MACRO_CONFIG_INT(Name, ScriptName, def, min, max, flags, desc) \
+	if((flags)&CFGFLAG_SAVE && g_Config.m_##Name != def) \
+	{ \
+		str_format(aLineBuf, sizeof(aLineBuf), "%s %i", #ScriptName, g_Config.m_##Name); \
+		InfClassWriteLine(aLineBuf); \
+	}
+#define MACRO_CONFIG_COL(Name, ScriptName, def, flags, desc) \
+	if((flags)&CFGFLAG_SAVE && g_Config.m_##Name != def) \
+	{ \
+		str_format(aLineBuf, sizeof(aLineBuf), "%s %u", #ScriptName, g_Config.m_##Name); \
+		InfClassWriteLine(aLineBuf); \
+	}
+#define MACRO_CONFIG_STR(Name, ScriptName, len, def, flags, desc) \
+	if((flags)&CFGFLAG_SAVE && str_comp(g_Config.m_##Name, def) != 0) \
+	{ \
+		EscapeParam(aEscapeBuf, g_Config.m_##Name, sizeof(aEscapeBuf)); \
+		str_format(aLineBuf, sizeof(aLineBuf), "%s \"%s\"", #ScriptName, aEscapeBuf); \
+		InfClassWriteLine(aLineBuf); \
+	}
+
+#include "infc_config_variables.h"
 
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_COL
