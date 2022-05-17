@@ -17,7 +17,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest, ubuntu-20.04]
         include:
         - os: ubuntu-latest
-          cmake-args: -G Ninja
+          cmake-args: -G Ninja -DVIDEORECORDER=OFF
           package-file: "*-linux_x86_64.tar.xz"
           fancy: true
           env:
@@ -25,7 +25,7 @@ jobs:
             CXXFLAGS: -Werror
         - os: ubuntu-20.04
           cmake-path: /usr/bin/
-          cmake-args: -G Ninja
+          cmake-args: -G Ninja -DVIDEORECORDER=OFF
           package-file: "*-linux_x86_64.tar.xz"
           fancy: false
           env:
