@@ -1565,6 +1565,12 @@ void CHud::RenderObjectOwnerIcons(int ClientID)
 
 void CHud::RenderClassExtraHud(int ClientID)
 {
+	if(m_pClient->m_InfclassDataVersion < 1)
+	{
+		// Old server
+		return;
+	}
+
 	const CGameClient::CClientData *pClientData = &m_pClient->m_aClients[ClientID];
 	if(pClientData->m_InfClassPlayerClass != PLAYERCLASS_HERO)
 	{
