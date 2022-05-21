@@ -1140,6 +1140,8 @@ CCharacter::CCharacter(CGameWorld *pGameWorld, int ID, CNetObj_Character *pChar,
 
 	m_LatestPrevInput = m_LatestInput = m_PrevInput = m_SavedInput = m_Input;
 
+	m_InfClassClass = PLAYERCLASS_INVALID;
+
 	ResetPrediction();
 	Read(pChar, pExtended, false);
 }
