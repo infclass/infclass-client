@@ -172,6 +172,11 @@ void CLaser::DoBounce()
 			m_Energy = -1;
 		}
 	}
+
+	if(m_Explosive)
+	{
+		GameWorld()->CreateExplosion(m_Pos, m_Owner, WEAPON_GRENADE, true, -1, -1LL);
+	}
 }
 
 void CLaser::Tick()
@@ -246,6 +251,11 @@ CLaserData CLaser::GetData() const
 	Result.m_Type = m_Type == WEAPON_SHOTGUN ? LASERTYPE_SHOTGUN : LASERTYPE_RIFLE;
 	Result.m_TuneZone = m_TuneZone;
 	return Result;
+}
+
+void CLaser::SetExplosive(bool Explosive)
+{
+	m_Explosive = Explosive;
 }
 
 void CLaser::SetBouncing(int Value)
