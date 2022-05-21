@@ -171,6 +171,11 @@ void CLaser::DoBounce()
 			m_Energy = -1;
 		}
 	}
+
+	if(m_Explosive)
+	{
+		GameWorld()->CreateExplosion(m_Pos, m_Owner, WEAPON_GRENADE, true, -1, -1LL);
+	}
 }
 
 void CLaser::Tick()
@@ -232,6 +237,11 @@ bool CLaser::Match(CLaser *pLaser)
 	const vec2 OtherDiff = pLaser->m_Pos - pLaser->m_From;
 	const float DirError = distance(normalize(OtherDiff) * length(ThisDiff), ThisDiff);
 	return DirError <= 2.f;
+}
+
+void CLaser::SetExplosive(bool Explosive)
+{
+	m_Explosive = Explosive;
 }
 
 void CLaser::SetBouncing(int Value)

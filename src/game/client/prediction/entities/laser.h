@@ -25,6 +25,7 @@ public:
 	void FillInfo(CNetObj_Laser *pLaser);
 	bool Match(CLaser *pLaser);
 
+	void SetExplosive(bool Explosive);
 	void SetBouncing(int Value);
 	void EnableBounce() { DoBounce(); }
 
@@ -49,6 +50,7 @@ private:
 	int m_Type;
 	int m_TuneZone;
 	int m_Bouncing = -1;
+	bool m_Explosive = false;
 };
 
 #endif
