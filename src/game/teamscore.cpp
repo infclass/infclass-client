@@ -51,6 +51,23 @@ bool CTeamsCore::CanCollide(int ClientID1, int ClientID2) const
 	return m_aTeam[ClientID1] == m_aTeam[ClientID2];
 }
 
+bool CTeamsCore::CanHook(int HookerID, int TargetID) const
+{
+	if(m_IsInfclass)
+	{
+		if(m_aIsInfected[HookerID] != m_aIsInfected[TargetID])
+			return true;
+
+		return !m_aIsProtected[TargetID];
+	}
+
+	if(m_aTeam[HookerID] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || m_aTeam[TargetID] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || HookerID == TargetID)
+		return true;
+	if(m_aIsSolo[HookerID] || m_aIsSolo[TargetID])
+		return false;
+	return m_aTeam[HookerID] == m_aTeam[TargetID];
+}
+
 void CTeamsCore::Reset()
 {
 	m_IsDDRace16 = false;
