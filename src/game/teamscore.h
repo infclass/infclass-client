@@ -39,6 +39,7 @@ public:
 
 	bool CanKeepHook(int ClientID1, int ClientID2) const;
 	bool CanCollide(int ClientID1, int ClientID2) const;
+	bool CanHook(int HookerID, int TargetID) const;
 
 	int Team(int ClientID) const;
 	void Team(int ClientID, int Team);
