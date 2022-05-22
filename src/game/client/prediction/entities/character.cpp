@@ -481,6 +481,22 @@ void CCharacter::FireWeapon()
 	{
 		int Lifetime = (int)(GameWorld()->GameTickSpeed() * GetTuning(m_TuneZone)->m_GrenadeLifetime);
 
+		bool Explosive = true;
+		if(GameWorld()->m_WorldConfig.m_IsInfClass)
+		{
+			switch(GetPlayerClass())
+			{
+			case PLAYERCLASS_MERCENARY:
+			case PLAYERCLASS_MEDIC:
+			case PLAYERCLASS_NINJA:
+			case PLAYERCLASS_SCIENTIST:
+				Explosive = false;
+				break;
+			default:
+				break;
+			}
+		}
+
 		new CProjectile(
 			GameWorld(),
 			WEAPON_GRENADE, //Type
@@ -489,7 +505,7 @@ void CCharacter::FireWeapon()
 			Direction, //Dir
 			Lifetime, //Span
 			false, //Freeze
-			true, //Explosive
+			Explosive, //Explosive
 			0, //Force
 			SOUND_GRENADE_EXPLODE //SoundImpact
 		); //SoundImpact
