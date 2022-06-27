@@ -20,6 +20,9 @@ class CPlayers : public CComponent
 		const CTeeRenderInfo *pRenderInfo,
 		int ClientID,
 		float Intra = 0.f);
+	void RenderInfCPlayer(
+		const vec2 &Position,
+		int ClientID);
 	void RenderHook(
 		const CNetObj_Character *pPrevChar,
 		const CNetObj_Character *pPlayerChar,
@@ -40,6 +43,8 @@ class CPlayers : public CComponent
 
 	int m_WeaponEmoteQuadContainerIndex;
 	int m_aWeaponSpriteMuzzleQuadContainerIndex[NUM_WEAPONS];
+	int m_IcContainerIndex;
+	int m_IcStatusIconOffset;
 
 public:
 	virtual int Sizeof() const override { return sizeof(*this); }
