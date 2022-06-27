@@ -40,6 +40,8 @@ class CPlayers : public CComponent
 
 	int m_WeaponEmoteQuadContainerIndex;
 	int m_aWeaponSpriteMuzzleQuadContainerIndex[NUM_WEAPONS];
+	int m_IcContainerIndex;
+	int m_IcStatusIconOffset;
 
 public:
 	virtual int Sizeof() const override { return sizeof(*this); }
