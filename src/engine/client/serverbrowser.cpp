@@ -1544,6 +1544,11 @@ bool IsFNG(const CServerInfo *pInfo)
 	return str_find_nocase(pInfo->m_aGameType, "fng");
 }
 
+bool IsInfclass(const CServerInfo *pInfo)
+{
+	return str_find_nocase(pInfo->m_aGameType, "InfClass") || str_find_nocase(pInfo->m_aGameType, "InfClassR");
+}
+
 bool IsRace(const CServerInfo *pInfo)
 {
 	return str_find_nocase(pInfo->m_aGameType, "race") || str_find_nocase(pInfo->m_aGameType, "fastcap");
