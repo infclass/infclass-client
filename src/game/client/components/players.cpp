@@ -495,7 +495,11 @@ void CPlayers::RenderPlayer(
 
 	// draw gun
 	{
-		bool HasWeapon = PlayerClass != PLAYERCLASS_BOOMER;
+		bool HasWeapon = true;
+		if(PlayerClass == PLAYERCLASS_BOOMER)
+		{
+			HasWeapon = Config()->m_InfcShowBoomerWeapon;
+		}
 		if(HasWeapon && !(RenderInfo.m_TeeRenderFlags & TEE_NO_WEAPON))
 		{
 			Graphics()->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
