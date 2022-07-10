@@ -3006,6 +3006,16 @@ void CMenus::RenderSettingsAppearance(CUIRect MainView)
 				Section.HSplitTop(2 * LineSize, 0x0, &Section); // Create empty space for hidden option
 			}
 		}
+
+		// ***** Infclass HUD ***** //
+		RightView.HSplitTop(HeadlineAndVMargin, &Label, &RightView);
+		UI()->DoLabel(&Label, Localize("Infclass HUD"), HeadlineFontSize, TEXTALIGN_LEFT);
+
+		// Switches of various DDRace HUD elements
+		RightView.HSplitTop(SectionTotalMargin + 4 * LineSize, &Section, &RightView);
+		Section.Margin(SectionMargin, &Section);
+
+		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_InfcShowHookProtection, Localize("Show player hook protection"), &g_Config.m_InfcShowHookProtection, &Section, LineSize);
 	}
 	else if(s_CurTab == APPEARANCE_TAB_CHAT)
 	{
