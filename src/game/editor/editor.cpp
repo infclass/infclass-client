@@ -2435,6 +2435,7 @@ void CEditor::DoMapEditor(CUIRect View)
 			m_pTilesetPicker->m_Front = pTileLayer->m_Front;
 			m_pTilesetPicker->m_Switch = pTileLayer->m_Switch;
 			m_pTilesetPicker->m_Tune = pTileLayer->m_Tune;
+			m_pTilesetPicker->m_pPtumZoneType = pTileLayer->m_pPtumZoneType;
 
 			m_pTilesetPicker->Render(true);
 
@@ -2566,6 +2567,13 @@ void CEditor::DoMapEditor(CUIRect View)
 				if(Layer != NUM_LAYERS)
 				{
 					const char *pExplanation = Explain(Explanation, (int)wx / 32 + (int)wy / 32 * 16, Layer);
+					if(pExplanation)
+						str_copy(m_aTooltip, pExplanation);
+				}
+				const char *pPtumZoneType = pLayer->m_pPtumZoneType;
+				if((Layer == NUM_LAYERS) && pPtumZoneType)
+				{
+					const char *pExplanation = Explain(pPtumZoneType, (int)wx / 32 + (int)wy / 32 * 16);
 					if(pExplanation)
 						str_copy(m_aTooltip, pExplanation);
 				}
@@ -2921,7 +2929,7 @@ void CEditor::DoMapEditor(CUIRect View)
 		}
 	}
 
-	if(!m_ShowPicker && GetSelectedGroup() && GetSelectedGroup()->m_UseClipping)
+	if(!m_ShowPicker && GetSelectedGroup() && GetSelectedGroup()->m_UseClipping && !GetSelectedGroup()->m_ZonesGroup)
 	{
 		std::shared_ptr<CLayerGroup> pGameGroup = m_Map.m_pGameGroup;
 		pGameGroup->MapScreen();
@@ -4156,6 +4164,26 @@ void CEditor::SelectGameLayer()
 			{
 				SelectLayer(i, g);
 				return;
+			}
+		}
+	}
+}
+
+void CEditor::ProcessPTUM()
+{
+	for(const std::shared_ptr<CLayerGroup> &pGroup : m_Map.m_vpGroups)
+	{
+		pGroup->m_ZonesGroup = str_comp("#Zones", pGroup->m_aName) == 0;
+
+		for(const std::shared_ptr<CLayer> &pLayer : pGroup->m_vpLayers)
+		{
+			if(pLayer->m_Type == LAYERTYPE_TILES)
+			{
+				if(!pGroup->m_ZonesGroup)
+					continue;
+
+				IGraphics::CTextureHandle Texture = GetPTUMEntitiesTexture(pLayer->m_aName);
+				pLayer->m_pPtumZoneType = Texture.IsValid() ? pLayer->m_aName : nullptr;
 			}
 		}
 	}
@@ -7609,6 +7637,37 @@ IGraphics::CTextureHandle CEditor::GetEntitiesTexture()
 	return m_EntitiesTexture;
 }
 
+IGraphics::CTextureHandle CEditor::GetPTUMEntitiesTexture(const char *pName)
+{
+	IGraphics::CTextureHandle *pTextureHandle = nullptr;
+	if(str_comp(pName, "icBonus") == 0)
+	{
+		pTextureHandle = &m_EntitiesIcBonusTexture;
+	}
+	else if(str_comp(pName, "icDamage") == 0)
+	{
+		pTextureHandle = &m_EntitiesIcDamageTexture;
+	}
+	else if(str_comp(pName, "icTele") == 0)
+	{
+		pTextureHandle = &m_EntitiesIcTeleTexture;
+	}
+
+	if(!pTextureHandle)
+		return IGraphics::CTextureHandle();
+
+	if(!pTextureHandle->IsValid())
+	{
+		char aBuf[512];
+		str_format(aBuf, sizeof(aBuf), "editor/entities/ptum/%s.png", pName);
+
+		int TextureLoadFlag = GetTextureUsageFlag();
+		*pTextureHandle = Graphics()->LoadTexture(aBuf, IStorage::TYPE_ALL, TextureLoadFlag);
+	}
+
+	return *pTextureHandle;
+}
+
 void CEditor::Init()
 {
 	m_pInput = Kernel()->RequestInterface<IInput>();
@@ -8014,6 +8073,7 @@ bool CEditor::Load(const char *pFileName, int StorageType)
 		str_copy(m_aFileName, pFileName);
 		SortImages();
 		SelectGameLayer();
+		ProcessPTUM();
 		MapView()->OnMapLoad();
 	}
 	else
