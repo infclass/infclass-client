@@ -313,7 +313,10 @@ int CEditor::PopupGroup(CEditor *pEditor, CUIRect View, void *pContext)
 		Button.VSplitLeft(40.0f, nullptr, &Button);
 		static float s_Name = 0;
 		if(pEditor->DoEditBox(&s_Name, &Button, pEditor->m_Map.m_vpGroups[pEditor->m_SelectedGroup]->m_aName, sizeof(pEditor->m_Map.m_vpGroups[pEditor->m_SelectedGroup]->m_aName), 10.0f, &s_Name))
+		{
+			pEditor->ProcessPTUM();
 			pEditor->m_Map.m_Modified = true;
+		}
 	}
 
 	enum
@@ -354,7 +357,7 @@ int CEditor::PopupGroup(CEditor *pEditor, CUIRect View, void *pContext)
 	int NewVal = 0;
 
 	// cut the properties that isn't needed
-	if(pEditor->GetSelectedGroup()->m_GameGroup)
+	if(pEditor->GetSelectedGroup()->m_GameGroup || pEditor->GetSelectedGroup()->m_ZonesGroup)
 		aProps[PROP_POS_X].m_pName = nullptr;
 
 	int Prop = pEditor->DoProperties(&View, aProps, s_aIds, &NewVal);
@@ -365,7 +368,7 @@ int CEditor::PopupGroup(CEditor *pEditor, CUIRect View, void *pContext)
 		pEditor->m_SelectedGroup = pEditor->m_Map.SwapGroups(pEditor->m_SelectedGroup, NewVal);
 
 	// these can not be changed on the game group
-	if(!pEditor->GetSelectedGroup()->m_GameGroup)
+	if(!pEditor->GetSelectedGroup()->m_GameGroup && !pEditor->GetSelectedGroup()->m_ZonesGroup)
 	{
 		if(Prop == PROP_PARA_X)
 			pEditor->m_Map.m_vpGroups[pEditor->m_SelectedGroup]->m_ParallaxX = NewVal;
@@ -460,7 +463,10 @@ int CEditor::PopupLayer(CEditor *pEditor, CUIRect View, void *pContext)
 		pEditor->UI()->DoLabel(&Label, "Name:", 10.0f, TEXTALIGN_LEFT);
 		static float s_Name = 0;
 		if(pEditor->DoEditBox(&s_Name, &EditBox, pCurrentLayer->m_aName, sizeof(pCurrentLayer->m_aName), 10.0f, &s_Name))
+		{
+			pEditor->ProcessPTUM();
 			pEditor->m_Map.m_Modified = true;
+		}
 	}
 
 	// spacing if any button was rendered
