@@ -310,7 +310,10 @@ int CEditor::PopupGroup(CEditor *pEditor, CUIRect View, void *pContext)
 		Button.VSplitLeft(40.0f, nullptr, &Button);
 		static float s_Name = 0;
 		if(pEditor->DoEditBox(&s_Name, &Button, pEditor->m_Map.m_vpGroups[pEditor->m_SelectedGroup]->m_aName, sizeof(pEditor->m_Map.m_vpGroups[pEditor->m_SelectedGroup]->m_aName), 10.0f, &s_Name))
+		{
+			pEditor->ProcessPTUM();
 			pEditor->m_Map.m_Modified = true;
+		}
 	}
 
 	enum
@@ -425,7 +428,10 @@ int CEditor::PopupLayer(CEditor *pEditor, CUIRect View, void *pContext)
 		Button.VSplitLeft(40.0f, nullptr, &Button);
 		static float s_Name = 0;
 		if(pEditor->DoEditBox(&s_Name, &Button, pEditor->GetSelectedLayer(0)->m_aName, sizeof(pEditor->GetSelectedLayer(0)->m_aName), 10.0f, &s_Name))
+		{
+			pEditor->ProcessPTUM();
 			pEditor->m_Map.m_Modified = true;
+		}
 	}
 
 	View.HSplitBottom(10.0f, &View, nullptr);

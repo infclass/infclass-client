@@ -652,6 +652,10 @@ int CLayerTiles::RenderProperties(CUIRect *pToolBox)
 	CUIRect Button;
 
 	bool IsGameLayer = (m_pEditor->m_Map.m_pGameLayer == this || m_pEditor->m_Map.m_pTeleLayer == this || m_pEditor->m_Map.m_pSpeedupLayer == this || m_pEditor->m_Map.m_pFrontLayer == this || m_pEditor->m_Map.m_pSwitchLayer == this || m_pEditor->m_Map.m_pTuneLayer == this);
+	if(m_pPtumZoneType)
+	{
+		IsGameLayer = true;
+	}
 
 	CLayerGroup *pGroup = m_pEditor->m_Map.m_vpGroups[m_pEditor->m_SelectedGroup];
 

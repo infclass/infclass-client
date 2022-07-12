@@ -400,6 +400,7 @@ int CEditor::Load(const char *pFileName, int StorageType)
 		str_copy(m_aFileName, pFileName, 512);
 		SortImages();
 		SelectGameLayer();
+		ProcessPTUM();
 	}
 	else
 	{
