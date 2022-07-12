@@ -123,6 +123,8 @@ void CLayerTiles::Render(bool Tileset)
 		Texture = m_pEditor->GetSwitchTexture();
 	else if(m_Tune)
 		Texture = m_pEditor->GetTuneTexture();
+	else if (m_pPtumZoneType)
+		Texture = m_pEditor->GetPTUMEntitiesTexture(m_pPtumZoneType);
 	Graphics()->TextureSet(Texture);
 
 	ColorRGBA Color = ColorRGBA(m_Color.r / 255.0f, m_Color.g / 255.0f, m_Color.b / 255.0f, m_Color.a / 255.0f);
@@ -664,7 +666,7 @@ CUI::EPopupMenuFunctionResult CLayerTiles::RenderProperties(CUIRect *pToolBox)
 {
 	CUIRect Button;
 
-	const bool EntitiesLayer = IsEntitiesLayer();
+	const bool EntitiesLayer = IsEntitiesLayer() || m_pPtumZoneType;
 
 	std::shared_ptr<CLayerGroup> pGroup = m_pEditor->m_Map.m_vpGroups[m_pEditor->m_SelectedGroup];
 
