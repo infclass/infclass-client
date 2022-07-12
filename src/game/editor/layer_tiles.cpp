@@ -671,7 +671,7 @@ CUI::EPopupMenuFunctionResult CLayerTiles::RenderProperties(CUIRect *pToolBox)
 {
 	CUIRect Button;
 
-	const bool EntitiesLayer = IsEntitiesLayer();
+	const bool EntitiesLayer = IsEntitiesLayer() || m_pPtumZoneType;
 
 	CLayerGroup *pGroup = m_pEditor->m_Map.m_vpGroups[m_pEditor->m_SelectedGroup];
 
