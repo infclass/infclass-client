@@ -976,9 +976,13 @@ int CClient::GetCurrentRaceTime()
 void CClient::GetServerInfo(CServerInfo *pServerInfo) const
 {
 	mem_copy(pServerInfo, &m_CurrentServerInfo, sizeof(m_CurrentServerInfo));
-
-	if(m_DemoPlayer.IsPlaying() && g_Config.m_ClDemoAssumeRace)
-		str_copy(pServerInfo->m_aGameType, "DDraceNetwork");
+	if(m_DemoPlayer.IsPlaying())
+	{
+		if(str_startswith(pServerInfo->m_aMap, "infc_"))
+			str_copy(pServerInfo->m_aGameType, "InfclassR");
+		else if (g_Config.m_ClDemoAssumeRace)
+			str_copy(pServerInfo->m_aGameType, "DDraceNetwork");
+	}
 }
 
 void CClient::ServerInfoRequest()
