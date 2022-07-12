@@ -177,7 +177,7 @@ bool CEditorMap::Save(const char *pFileName)
 		GItem.m_ParallaxY = pGroup->m_ParallaxY;
 		GItem.m_OffsetX = pGroup->m_OffsetX;
 		GItem.m_OffsetY = pGroup->m_OffsetY;
-		GItem.m_UseClipping = pGroup->m_UseClipping;
+		GItem.m_UseClipping = pGroup->m_UseClipping || pGroup->m_ZonesGroup;
 		GItem.m_ClipX = pGroup->m_ClipX;
 		GItem.m_ClipY = pGroup->m_ClipY;
 		GItem.m_ClipW = pGroup->m_ClipW;
@@ -392,6 +392,7 @@ bool CEditor::Load(const char *pFileName, int StorageType)
 		str_copy(m_aFileName, pFileName);
 		SortImages();
 		SelectGameLayer();
+		ProcessPTUM();
 		ResetMenuBackgroundPositions();
 	}
 	else

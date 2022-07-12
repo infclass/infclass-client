@@ -180,6 +180,7 @@ public:
 	bool m_Readonly;
 	bool m_Visible;
 	int m_BrushRefCount;
+	const char *m_pPtumZoneType = nullptr;
 };
 
 class CLayerGroup
@@ -205,6 +206,7 @@ public:
 
 	char m_aName[12];
 	bool m_GameGroup;
+	bool m_ZonesGroup = false;
 	bool m_Visible;
 	bool m_Collapse;
 
@@ -732,6 +734,9 @@ class CEditor : public IEditor
 	bool m_EditorWasUsedBefore = false;
 
 	IGraphics::CTextureHandle m_EntitiesTexture;
+	IGraphics::CTextureHandle m_EntitiesIcBonusTexture;
+	IGraphics::CTextureHandle m_EntitiesIcDamageTexture;
+	IGraphics::CTextureHandle m_EntitiesIcTeleTexture;
 
 	IGraphics::CTextureHandle m_FrontTexture;
 	IGraphics::CTextureHandle m_TeleTexture;
@@ -1151,6 +1156,7 @@ public:
 	IGraphics::CTextureHandle m_CursorTexture;
 
 	IGraphics::CTextureHandle GetEntitiesTexture();
+	IGraphics::CTextureHandle GetPTUMEntitiesTexture(const char *pName);
 
 	CLayerGroup m_Brush;
 	CLayerTiles m_TilesetPicker;
@@ -1288,6 +1294,7 @@ public:
 	void RenderFileDialog();
 
 	void SelectGameLayer();
+	void ProcessPTUM();
 	void SortImages();
 	bool SelectLayerByTile();
 
@@ -1366,6 +1373,7 @@ public:
 		EXPLANATION_BLOCKWORLDS
 	};
 	static const char *Explain(int ExplanationID, int Tile, int Layer);
+	static const char *Explain(const char *pZoneType, int Tile);
 
 	int GetLineDistance() const;
 

@@ -167,7 +167,7 @@ void CLayerGroup::Render()
 	MapScreen();
 	IGraphics *pGraphics = m_pMap->m_pEditor->Graphics();
 
-	if(m_UseClipping)
+	if(m_UseClipping && !m_ZonesGroup)
 	{
 		float aPoints[4];
 		m_pMap->m_pGameGroup->Mapping(aPoints);
@@ -2548,6 +2548,7 @@ void CEditor::DoMapEditor(CUIRect View)
 		if(UI()->HotItem() == s_pEditorID)
 		{
 			int Layer = NUM_LAYERS;
+			const char *pPtumZoneType = nullptr;
 			if(m_ShowPicker)
 			{
 				CLayer *pLayer = GetSelectedLayer(0);
@@ -2563,6 +2564,8 @@ void CEditor::DoMapEditor(CUIRect View)
 					Layer = LAYER_SPEEDUP;
 				else if(pLayer == m_Map.m_pTuneLayer)
 					Layer = LAYER_TUNE;
+
+				pPtumZoneType = pLayer->m_pPtumZoneType;
 			}
 			if(m_ShowPicker && Layer != NUM_LAYERS)
 			{
@@ -2572,6 +2575,10 @@ void CEditor::DoMapEditor(CUIRect View)
 					m_pTooltip = Explain(EXPLANATION_FNG, (int)wx / 32 + (int)wy / 32 * 16, Layer);
 				else if(m_SelectEntitiesImage == "Vanilla")
 					m_pTooltip = Explain(EXPLANATION_VANILLA, (int)wx / 32 + (int)wy / 32 * 16, Layer);
+			}
+			else if(m_ShowPicker && pPtumZoneType)
+			{
+				m_pTooltip = Explain(pPtumZoneType, (int)wx / 32 + (int)wy / 32 * 16);
 			}
 			else if(m_Brush.IsEmpty())
 				m_pTooltip = "Use left mouse button to drag and create a brush. Hold shift to select multiple quads. Use ctrl+right mouse to select layer.";
@@ -2939,7 +2946,7 @@ void CEditor::DoMapEditor(CUIRect View)
 		}
 	}
 
-	if(!m_ShowPicker && GetSelectedGroup() && GetSelectedGroup()->m_UseClipping)
+	if(!m_ShowPicker && GetSelectedGroup() && GetSelectedGroup()->m_UseClipping && !GetSelectedGroup()->m_ZonesGroup)
 	{
 		CLayerGroup *pGameGroup = m_Map.m_pGameGroup;
 		pGameGroup->MapScreen();
@@ -4235,6 +4242,40 @@ void CEditor::SelectGameLayer()
 			{
 				SelectLayer(i, g);
 				return;
+			}
+		}
+	}
+}
+
+void CEditor::ProcessPTUM()
+{
+	for(size_t g = 0; g < m_Map.m_vpGroups.size(); g++)
+	{
+		CLayerGroup *pGroup = m_Map.m_vpGroups.at(g);
+		pGroup->m_ZonesGroup = str_comp("#Zones", pGroup->m_aName) == 0;
+
+		for(size_t i = 0; i < pGroup->m_vpLayers.size(); i++)
+		{
+			CLayer *pLayer = pGroup->m_vpLayers[i];
+			if(pLayer->m_Type == LAYERTYPE_TILES)
+			{
+				CLayerTiles *pTilesLayer = static_cast<CLayerTiles *>(pLayer);
+				IGraphics::CTextureHandle Texture;
+				if(pGroup->m_ZonesGroup)
+				{
+					Texture = GetPTUMEntitiesTexture(pLayer->m_aName);
+				}
+
+				if(Texture.IsValid())
+				{
+					pTilesLayer->m_Texture = Texture;
+					pLayer->m_pPtumZoneType = pLayer->m_aName;
+				}
+				else if(pLayer->m_pPtumZoneType)
+				{
+					pTilesLayer->m_Texture.Invalidate();
+					pLayer->m_pPtumZoneType = nullptr;
+				}
 			}
 		}
 	}
@@ -6942,6 +6983,37 @@ IGraphics::CTextureHandle CEditor::GetEntitiesTexture()
 	if(!m_EntitiesTexture.IsValid())
 		m_EntitiesTexture = Graphics()->LoadTexture("editor/entities/DDNet.png", IStorage::TYPE_ALL, CImageInfo::FORMAT_AUTO, TextureLoadFlag);
 	return m_EntitiesTexture;
+}
+
+IGraphics::CTextureHandle CEditor::GetPTUMEntitiesTexture(const char *pName)
+{
+	IGraphics::CTextureHandle *pTextureHandle = nullptr;
+	if(str_comp(pName, "icBonus") == 0)
+	{
+		pTextureHandle = &m_EntitiesIcBonusTexture;
+	}
+	else if(str_comp(pName, "icDamage") == 0)
+	{
+		pTextureHandle = &m_EntitiesIcDamageTexture;
+	}
+	else if(str_comp(pName, "icTele") == 0)
+	{
+		pTextureHandle = &m_EntitiesIcTeleTexture;
+	}
+
+	if(!pTextureHandle)
+		return IGraphics::CTextureHandle();
+
+	if(!pTextureHandle->IsValid())
+	{
+		char aBuf[512];
+		str_format(aBuf, sizeof(aBuf), "editor/entities/ptum/%s.png", pName);
+
+		int TextureLoadFlag = GetTextureUsageFlag();
+		*pTextureHandle = Graphics()->LoadTexture(aBuf, IStorage::TYPE_ALL, CImageInfo::FORMAT_AUTO, TextureLoadFlag);
+	}
+
+	return *pTextureHandle;
 }
 
 void CEditor::Init()
