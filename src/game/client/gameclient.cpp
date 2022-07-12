@@ -4107,11 +4107,24 @@ IGraphics::CTextureHandle CGameClient::GetInfclassTextureForDamageType(EDamageTy
 
 void CGameClient::LoadMapSettings()
 {
+	bool LoadDDNetTuning = true;
+
+	{
+		CServerInfo ServerInfo;
+		Client()->GetServerInfo(&ServerInfo);
+		if(GetGameInfo(0, 0, &ServerInfo).m_InfClass)
+		{
+			LoadDDNetTuning = false;
+		}
+	}
 	// Reset Tunezones
 	CTuningParams TuningParams;
 	for(int i = 0; i < NUM_TUNEZONES; i++)
 	{
 		TuningList()[i] = TuningParams;
+		if(!LoadDDNetTuning)
+			continue;
+
 		TuningList()[i].Set("gun_curvature", 0);
 		TuningList()[i].Set("gun_speed", 1400);
 		TuningList()[i].Set("shotgun_curvature", 0);
