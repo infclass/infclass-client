@@ -8,7 +8,10 @@
 #include "message.h"
 #include <base/hash.h>
 
+#include <engine/shared/translation_context.h>
+
 #include <game/generated/protocol.h>
+#include <game/generated/protocol7.h>
 
 #include <engine/friends.h>
 #include <functional>
@@ -66,6 +69,7 @@ public:
 	};
 
 	typedef std::function<void()> TMapLoadingCallbackFunc;
+	CTranslationContext m_TranslationContext;
 
 protected:
 	// quick access to state of the client
@@ -222,14 +226,15 @@ public:
 	virtual int SnapItemSize(int SnapID, int Index) const = 0;
 
 	virtual void SnapSetStaticsize(int ItemType, int Size) = 0;
+	virtual void SnapSetStaticsize7(int ItemType, int Size) = 0;
 
 	virtual int SendMsg(int Conn, CMsgPacker *pMsg, int Flags) = 0;
 	virtual int SendMsgActive(CMsgPacker *pMsg, int Flags) = 0;
 
 	template<class T>
-	int SendPackMsgActive(T *pMsg, int Flags)
+	int SendPackMsgActive(T *pMsg, int Flags, bool NoTranslate = false)
 	{
-		CMsgPacker Packer(T::ms_MsgID, false);
+		CMsgPacker Packer(T::ms_MsgID, false, NoTranslate);
 		if(pMsg->Pack(&Packer))
 			return -1;
 		return SendMsgActive(&Packer, Flags);
@@ -257,6 +262,9 @@ public:
 	int Points() const { return m_Points; }
 	int64_t ReconnectTime() const { return m_ReconnectTime; }
 	void SetReconnectTime(int64_t ReconnectTime) { m_ReconnectTime = ReconnectTime; }
+
+	virtual bool IsSixup() = 0;
+
 	virtual int GetCurrentRaceTime() = 0;
 
 	virtual void RaceRecord_Start(const char *pFilename) = 0;
@@ -339,6 +347,9 @@ public:
 	virtual bool IsDisplayingWarning() const = 0;
 
 	virtual CNetObjHandler *GetNetObjHandler() = 0;
+	virtual protocol7::CNetObjHandler *GetNetObjHandler7() = 0;
+
+	virtual int ClientVersion7() const = 0;
 };
 
 void SnapshotRemoveExtraProjectileInfo(unsigned char *pData);

@@ -25,6 +25,8 @@ struct CEnvPointBezier_upstream;
 struct CMapItemGroup;
 struct CQuad;
 
+#include <game/generated/protocol.h>
+
 class CTeeRenderInfo
 {
 public:
@@ -62,6 +64,12 @@ public:
 	bool m_GotAirJump;
 	int m_TeeRenderFlags;
 	bool m_FeetFlipped;
+
+	// 0.7
+	IGraphics::CTextureHandle m_aTextures[NUM_SKINPARTS];
+	vec4 m_aColors[NUM_SKINPARTS];
+	IGraphics::CTextureHandle m_BotTexture;
+	vec4 m_BotColor;
 };
 
 // Tee Render Flags
@@ -124,6 +132,9 @@ class CRenderTools
 	void GetRenderTeeBodyScale(float BaseSize, float &BodyScale);
 	void GetRenderTeeFeetScale(float BaseSize, float &FeetScaleWidth, float &FeetScaleHeight);
 
+	void RenderTee6(const CAnimState *pAnim, const CTeeRenderInfo *pInfo, int Emote, vec2 Dir, vec2 Pos, float Alpha = 1.0f);
+	void RenderTee7(const CAnimState *pAnim, const CTeeRenderInfo *pInfo, int Emote, vec2 Dir, vec2 Pos);
+
 public:
 	class IGraphics *Graphics() const { return m_pGraphics; }
 	class ITextRender *TextRender() const { return m_pTextRender; }
@@ -132,6 +143,7 @@ public:
 
 	void SelectSprite(CDataSprite *pSprite, int Flags = 0, int sx = 0, int sy = 0) const;
 	void SelectSprite(int Id, int Flags = 0, int sx = 0, int sy = 0) const;
+	void SelectSprite7(int Id, int Flags = 0, int sx = 0, int sy = 0) const;
 
 	void GetSpriteScale(const CDataSprite *pSprite, float &ScaleX, float &ScaleY) const;
 	void GetSpriteScale(int Id, float &ScaleX, float &ScaleY) const;

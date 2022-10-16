@@ -98,6 +98,13 @@ CMenus::CMenus()
 
 	m_PasswordInput.SetBuffer(g_Config.m_Password, sizeof(g_Config.m_Password));
 	m_PasswordInput.SetHidden(true);
+
+	// 0.7 skins
+	m_TeePartSelected = SKINPART_BODY;
+	m_pSelectedSkin = 0;
+	m_SkinModified = false;
+	// TODO: remove this and add a search
+	m_RefreshSkinSelector = true;
 }
 
 int CMenus::DoButton_Toggle(const void *pID, int Checked, const CUIRect *pRect, bool Active)

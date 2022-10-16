@@ -121,6 +121,7 @@ public:
 	static int EstimateLatency(int Loc1, int Loc2);
 	static bool ParseLocation(int *pResult, const char *pString);
 	void InfoToString(char *pBuffer, int BufferSize) const;
+	const char *ShortVersion() const { return str_startswith(m_aVersion, "0.7") ? "0.7" : "0.6"; }
 };
 
 class CCommunityCountryServer
@@ -252,6 +253,7 @@ public:
 	/* Constants: Server Browser Sorting
 		SORT_NAME - Sort by name.
 		SORT_PING - Sort by ping.
+		SORT_VERSION - Sort by version.
 		SORT_MAP - Sort by map
 		SORT_GAMETYPE - Sort by game type. DM, TDM etc.
 		SORT_NUMPLAYERS - Sort after how many players there are on the server.
@@ -260,6 +262,7 @@ public:
 	{
 		SORT_NAME = 0,
 		SORT_PING,
+		SORT_VERSION,
 		SORT_MAP,
 		SORT_GAMETYPE,
 		SORT_NUMPLAYERS,

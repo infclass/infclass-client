@@ -168,6 +168,8 @@ public:
 	const char *ErrorMessage() { return m_aErrorMessage; }
 
 	int Update(bool RealTime = true);
+	bool m_Sixup;
+	bool IsSixup() { return m_Sixup; }
 
 	const CPlaybackInfo *Info() const { return &m_Info; }
 	bool IsPlaying() const override { return m_File != nullptr; }

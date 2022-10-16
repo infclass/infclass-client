@@ -1370,6 +1370,7 @@ set(EXPECTED_DATA
   countryflags/ZW.png
   countryflags/default.png
   countryflags/index.txt
+  deadtee.png
   debug_font.png
   editor/audio_source.png
   editor/automap/basic_freeze.rules
@@ -1964,18 +1965,22 @@ set_src(ENGINE_SHARED GLOB_RECURSE src/engine/shared
   protocol_ex.cpp
   protocol_ex.h
   protocol_ex_msgs.h
+  protocolglue.cpp
+  protocolglue.h
   ringbuffer.cpp
   ringbuffer.h
   serverinfo.cpp
   serverinfo.h
   snapshot.cpp
   snapshot.h
+  snapshot_translate.cpp
   storage.cpp
   stun.cpp
   stun.h
   teehistorian_ex.cpp
   teehistorian_ex.h
   teehistorian_ex_chunks.h
+  translation_context.h
   uuid_manager.cpp
   uuid_manager.h
   video.cpp
@@ -2147,6 +2152,8 @@ if(CLIENT)
     serverbrowser_http.h
     serverbrowser_ping_cache.cpp
     serverbrowser_ping_cache.h
+    sixup/translate_game.cpp
+    sixup/translate_system.cpp
     smooth_time.cpp
     smooth_time.h
     sound.cpp
@@ -2231,6 +2238,8 @@ if(CLIENT)
     components/scoreboard.h
     components/skins.cpp
     components/skins.h
+    components/skins7.cpp
+    components/skins7.h
     components/sounds.cpp
     components/sounds.h
     components/spectator.cpp

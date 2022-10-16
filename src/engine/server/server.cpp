@@ -1020,7 +1020,7 @@ void CServer::DoSnapshot()
 			m_aClients[i].m_Snapshots.PurgeUntil(m_CurrentGameTick - TickSpeed() * 3);
 
 			// save the snapshot
-			m_aClients[i].m_Snapshots.Add(m_CurrentGameTick, time_get(), SnapshotSize, pData, 0, nullptr);
+			m_aClients[i].m_Snapshots.Add(m_CurrentGameTick, time_get(), SnapshotSize, pData, 0, nullptr, 0, nullptr);
 
 			// find snapshot that we can perform delta against
 			int DeltaTick = -1;

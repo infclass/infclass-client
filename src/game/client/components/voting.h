@@ -24,7 +24,6 @@ class CVoting : public CComponent
 	int m_Voted;
 	int m_Yes, m_No, m_Pass, m_Total;
 
-	void AddOption(const char *pDescription);
 	void ClearOptions();
 	void Callvote(const char *pType, const char *pValue, const char *pReason);
 
@@ -50,6 +49,7 @@ public:
 	void CallvoteOption(int OptionID, const char *pReason, bool ForceVote = false);
 	void RemovevoteOption(int OptionID);
 	void AddvoteOption(const char *pDescription, const char *pCommand);
+	void AddOption(const char *pDescription);
 
 	void Vote(int v); // -1 = no, 1 = yes
 
