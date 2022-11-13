@@ -370,7 +370,8 @@ void CPlayers::RenderPlayer(
 
 	CTeeRenderInfo RenderInfo = *pRenderInfo;
 
-	int PlayerClass = (m_pClient->m_GameInfo.m_InfClass && (ClientID >= 0)) ? GameClient()->m_aClients[ClientID].m_InfClassPlayerClass : -1;
+	const CGameClient::CClientData *pClientData = (m_pClient->m_GameInfo.m_InfClass && ClientID >= 0) ? &m_pClient->m_aClients[ClientID] : nullptr;
+	const int PlayerClass = pClientData ? pClientData->m_InfClassPlayerClass : -1;
 
 	bool Local = m_pClient->m_Snap.m_LocalClientID == ClientID;
 	bool OtherTeam = m_pClient->IsOtherTeam(ClientID);
@@ -549,7 +550,12 @@ void CPlayers::RenderPlayer(
 				else
 					Graphics()->QuadsSetRotation(Direction.x < 0 ? 100.0f : 500.0f);
 
-				Graphics()->RenderQuadContainerAsSprite(m_WeaponEmoteQuadContainerIndex, QuadOffset, WeaponPosition.x, WeaponPosition.y);
+				float Scale = 1.0f;
+				if(PlayerClass == PLAYERCLASS_TANK)
+				{
+					Scale = 1.4f;
+				}
+				Graphics()->RenderQuadContainerAsSprite(m_WeaponEmoteQuadContainerIndex, QuadOffset, WeaponPosition.x, WeaponPosition.y, Scale, Scale);
 			}
 			else if(Player.m_Weapon == WEAPON_NINJA)
 			{
