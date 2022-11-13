@@ -436,7 +436,8 @@ void CPlayers::RenderPlayer(
 
 	CTeeRenderInfo RenderInfo = *pRenderInfo;
 
-	int PlayerClass = (m_pClient->m_GameInfo.m_InfClass && (ClientId >= 0)) ? GameClient()->m_aClients[ClientId].m_InfClassPlayerClass : -1;
+	const CGameClient::CClientData *pClientData = (m_pClient->m_GameInfo.m_InfClass && ClientId >= 0) ? &m_pClient->m_aClients[ClientId] : nullptr;
+	const int PlayerClass = pClientData ? pClientData->m_InfClassPlayerClass : -1;
 
 	bool Local = m_pClient->m_Snap.m_LocalClientId == ClientId;
 	bool OtherTeam = m_pClient->IsOtherTeam(ClientId);
@@ -451,6 +452,10 @@ void CPlayers::RenderPlayer(
 	if(PlayerClass == PLAYERCLASS_BOOMER)
 	{
 		RenderInfo.m_Size = 68.0f;
+	}
+	if(PlayerClass == PLAYERCLASS_TANK)
+	{
+		RenderInfo.m_Size = 70.0f;
 	}
 
 	float IntraTick = Intra;
@@ -611,7 +616,13 @@ void CPlayers::RenderPlayer(
 				else
 					Graphics()->QuadsSetRotation(Direction.x < 0 ? 100.0f : 500.0f);
 
-				Graphics()->RenderQuadContainerAsSprite(m_WeaponEmoteQuadContainerIndex, QuadOffset, WeaponPosition.x, WeaponPosition.y);
+				float Scale = 1.0f;
+				if(PlayerClass == PLAYERCLASS_TANK)
+				{
+					Scale = 1.45f;
+					WeaponPosition += Dir * 8;
+				}
+				Graphics()->RenderQuadContainerAsSprite(m_WeaponEmoteQuadContainerIndex, QuadOffset, WeaponPosition.x, WeaponPosition.y, Scale, Scale);
 			}
 			else if(Player.m_Weapon == WEAPON_NINJA)
 			{
@@ -747,6 +758,11 @@ void CPlayers::RenderPlayer(
 			case WEAPON_GUN: RenderHand(&RenderInfo, WeaponPosition, Direction, -3 * pi / 4, vec2(-15, 4), Alpha); break;
 			case WEAPON_SHOTGUN: RenderHand(&RenderInfo, WeaponPosition, Direction, -pi / 2, vec2(-5, 4), Alpha); break;
 			case WEAPON_GRENADE: RenderHand(&RenderInfo, WeaponPosition, Direction, -pi / 2, vec2(-4, 7), Alpha); break;
+			}
+
+			if(PlayerClass == PLAYERCLASS_TANK)
+			{
+				RenderHand(&RenderInfo, WeaponPosition, Direction, -3 * pi / 4, vec2(-5, 4), Alpha);
 			}
 		}
 	}
