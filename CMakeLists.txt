@@ -1974,6 +1974,7 @@ set_src(ENGINE_GFX GLOB src/engine/gfx
   image_manipulation.h
 )
 set_src(GAME_SHARED GLOB src/game
+  classes.h
   collision.cpp
   collision.h
   damage_type.h
