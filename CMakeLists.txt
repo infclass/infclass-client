@@ -2146,6 +2146,7 @@ set_src(ENGINE_GFX GLOB src/engine/gfx
 )
 set_src(GAME_SHARED GLOB src/game
   alloc.h
+  classes.h
   collision.cpp
   collision.h
   damage_type.h
