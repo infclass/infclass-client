@@ -21,6 +21,8 @@ void CKillMessages::OnWindowResize()
 	{
 		TextRender()->DeleteTextContainer(Killmsg.m_VictimTextContainerIndex);
 		TextRender()->DeleteTextContainer(Killmsg.m_KillerTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantPlusContainerIndex);
 	}
 }
 
@@ -34,6 +36,8 @@ void CKillMessages::OnReset()
 
 		TextRender()->DeleteTextContainer(Killmsg.m_VictimTextContainerIndex);
 		TextRender()->DeleteTextContainer(Killmsg.m_KillerTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantTextContainerIndex);
+		TextRender()->DeleteTextContainer(Killmsg.m_AssistantPlusContainerIndex);
 	}
 }
 
@@ -120,6 +124,38 @@ void CKillMessages::CreateKillmessageNamesIfNotCreated(CKillMsg &Kill)
 
 		TextRender()->CreateTextContainer(Kill.m_KillerTextContainerIndex, &Cursor, Kill.m_aKillerName);
 	}
+
+	if(!Kill.m_AssistantTextContainerIndex.Valid() && Kill.m_aAssistantName[0] != 0)
+	{
+		{
+			Kill.m_AssistantTextWidth = TextRender()->TextWidth(FontSize, Kill.m_aAssistantName, -1, -1.0f);
+
+			CTextCursor Cursor;
+			TextRender()->SetCursor(&Cursor, 0, 0, FontSize, TEXTFLAG_RENDER);
+			Cursor.m_LineWidth = -1;
+
+			unsigned Color = g_Config.m_ClKillMessageNormalColor;
+			TextRender()->TextColor(color_cast<ColorRGBA>(ColorHSLA(Color)));
+
+			TextRender()->CreateTextContainer(Kill.m_AssistantTextContainerIndex, &Cursor, Kill.m_aAssistantName);
+		}
+
+		{
+			// plus
+			const char aPlus[] = "+";
+			Kill.m_AssistantPlusWidth = TextRender()->TextWidth(FontSize, aPlus, -1, -1.0f);
+
+			CTextCursor Cursor;
+			TextRender()->SetCursor(&Cursor, 0, 0, FontSize, TEXTFLAG_RENDER);
+			Cursor.m_LineWidth = -1;
+
+			static const ColorRGBA PlusColor{0.8f, 0.8f, 0.8f, 1.0f};
+			TextRender()->TextColor(PlusColor);
+
+			TextRender()->CreateTextContainer(Kill.m_AssistantPlusContainerIndex, &Cursor, aPlus);
+		}
+	}
+
 	TextRender()->TextColor(TextRender()->DefaultTextColor());
 }
 
@@ -165,6 +201,18 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 			Kill.m_KillerRenderInfo.Reset();
 		}
 
+		Kill.m_AssistantID = pMsg->m_Assistant;
+		if(Kill.m_AssistantID >= 0 && Kill.m_AssistantID < MAX_CLIENTS && m_pClient->m_aClients[Kill.m_AssistantID].m_Active)
+		{
+			str_copy(Kill.m_aAssistantName, m_pClient->m_aClients[Kill.m_AssistantID].m_aName);
+			Kill.m_AssistantRenderInfo = m_pClient->m_aClients[Kill.m_AssistantID].m_RenderInfo;
+		}
+		else
+		{
+			Kill.m_aAssistantName[0] = '\0';
+			Kill.m_AssistantRenderInfo.Reset();
+		}
+
 		Kill.m_InfDamageType = pMsg->m_InfDamageType;
 		Kill.m_Weapon = pMsg->m_Weapon;
 		Kill.m_ModeSpecial = 0;
@@ -192,6 +240,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex);
 
 			m_aKillmsgs[m_KillmsgCurrent] = Kill;
 		}
@@ -199,6 +249,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 		{
 			TextRender()->DeleteTextContainer(Kill.m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(Kill.m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(Kill.m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(Kill.m_AssistantPlusContainerIndex);
 		}
 
 		Graphics()->MapScreen(ScreenX0, ScreenY0, ScreenX1, ScreenY1);
@@ -279,6 +331,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex);
 
 			m_aKillmsgs[m_KillmsgCurrent] = Kill;
 		}
@@ -286,6 +340,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 		{
 			TextRender()->DeleteTextContainer(Kill.m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(Kill.m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(Kill.m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(Kill.m_AssistantPlusContainerIndex);
 		}
 
 		Graphics()->MapScreen(ScreenX0, ScreenY0, ScreenX1, ScreenY1);
@@ -354,6 +410,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(m_aKillmsgs[m_KillmsgCurrent].m_AssistantPlusContainerIndex);
 
 			m_aKillmsgs[m_KillmsgCurrent] = Kill;
 		}
@@ -361,6 +419,8 @@ void CKillMessages::OnMessage(int MsgType, void *pRawMsg)
 		{
 			TextRender()->DeleteTextContainer(Kill.m_VictimTextContainerIndex);
 			TextRender()->DeleteTextContainer(Kill.m_KillerTextContainerIndex);
+			TextRender()->DeleteTextContainer(Kill.m_AssistantTextContainerIndex);
+			TextRender()->DeleteTextContainer(Kill.m_AssistantPlusContainerIndex);
 		}
 
 		Graphics()->MapScreen(ScreenX0, ScreenY0, ScreenX1, ScreenY1);
@@ -478,6 +538,21 @@ void CKillMessages::OnRender()
 				}
 			}
 
+			if(m_aKillmsgs[r].m_AssistantID >= 0)
+			{
+				// render assistant tee
+				x -= 24.0f;
+
+				CTeeRenderInfo TeeInfo = m_aKillmsgs[r].m_AssistantRenderInfo;
+
+				const CAnimState *pIdleState = CAnimState::GetIdle();
+				vec2 OffsetToMid;
+				RenderTools()->GetRenderTeeOffsetToRenderedTee(pIdleState, &TeeInfo, OffsetToMid);
+				vec2 TeeRenderPos(x, y + 46.0f / 2.0f + OffsetToMid.y);
+
+				RenderTools()->RenderTee(pIdleState, &TeeInfo, EMOTE_ANGRY, vec2(1, 0), TeeRenderPos);
+			}
+
 			// render killer tee
 			x -= 24.0f;
 
@@ -491,6 +566,22 @@ void CKillMessages::OnRender()
 			}
 
 			x -= 32.0f;
+
+			if(m_aKillmsgs[r].m_AssistantID >= 0)
+			{
+				// render assistant name
+				x -= m_aKillmsgs[r].m_AssistantTextWidth;
+
+				if(m_aKillmsgs[r].m_AssistantTextContainerIndex.Valid())
+				{
+					TextRender()->RenderTextContainer(m_aKillmsgs[r].m_AssistantTextContainerIndex, TextColor, TextRender()->DefaultTextOutlineColor(), x, y + (46.f - 36.f) / 2.f);
+
+					ColorRGBA Color = color_cast<ColorRGBA>(ColorHSLA(g_Config.m_ClKillMessageHighlightColor));
+
+					x -= m_aKillmsgs[r].m_AssistantPlusWidth;
+					TextRender()->RenderTextContainer(m_aKillmsgs[r].m_AssistantPlusContainerIndex, Color, TextRender()->DefaultTextOutlineColor(), x, y + (46.f - 36.f) / 2.f);
+				}
+			}
 
 			// render killer name
 			x -= m_aKillmsgs[r].m_KillerTextWidth;
@@ -517,6 +608,15 @@ void CKillMessages::RefindSkins()
 				KillMsg.m_KillerID = -1;
 		}
 
+		if(KillMsg.m_AssistantID >= 0)
+		{
+			const CGameClient::CClientData &Client = GameClient()->m_aClients[KillMsg.m_AssistantID];
+			if(Client.m_aSkinName[0] != '\0')
+				KillMsg.m_AssistantRenderInfo = Client.m_RenderInfo;
+			else
+				KillMsg.m_AssistantID = -1;
+		}
+		
 		for(int i = 0; i < MAX_KILLMSG_TEAM_MEMBERS; i++)
 		{
 			KillMsg.m_aVictimRenderInfo[i].Reset();
