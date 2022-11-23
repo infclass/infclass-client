@@ -36,6 +36,15 @@ public:
 		float m_KillerTextWidth;
 		CTeeRenderInfo m_KillerRenderInfo;
 
+		int m_AssistantID = -1;
+		char m_aAssistantName[64];
+		STextContainerIndex m_AssistantTextContainerIndex;
+		float m_AssistantTextWidth;
+		CTeeRenderInfo m_AssistantRenderInfo;
+
+		STextContainerIndex m_AssistantPlusContainerIndex;
+		float m_AssistantPlusWidth;
+
 		int m_ModeSpecial; // for CTF, if the guy is carrying a flag for example
 		int m_Tick;
 		int m_FlagCarrierBlue;
