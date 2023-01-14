@@ -2176,9 +2176,11 @@ int CMenus::MenuImageScan(const char *pName, int IsDir, int DirType, void *pUser
 		pSelf->Graphics()->FreePNG(&Info);
 
 		// set menu image data
+		const char *pCaption = Localize("Loading DDNet Client");
+		pCaption = CUI::ReplaceHardcodedGameName(pCaption);
 		str_truncate(MenuImage.m_aName, sizeof(MenuImage.m_aName), pName, str_length(pName) - 4);
 		pSelf->m_vMenuImages.push_back(MenuImage);
-		pSelf->RenderLoading(Localize("Loading DDNet Client"), Localize("Loading menu images"), 1);
+		pSelf->RenderLoading(pCaption, Localize("Loading menu images"), 1);
 	}
 	return 0;
 }
