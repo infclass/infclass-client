@@ -264,6 +264,7 @@ void CGameClient::OnInit()
 	Client()->UpdateAndSwap();
 
 	const char *pLoadingDDNetCaption = Localize("Loading DDNet Client");
+	pLoadingDDNetCaption = CUI::ReplaceHardcodedGameName(pLoadingDDNetCaption);
 
 	// init all components
 	int SkippedComps = 0;
