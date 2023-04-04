@@ -2153,6 +2153,7 @@ void CGameClient::CClientData::Reset()
 	m_InfClassPlayerClass = -1;
 	m_InfClassCustomSkin = false;
 
+	m_InfClassClassFlags = 0;
 	m_InfClassClassData1 = 0;
 
 	m_Solo = false;
@@ -2804,6 +2805,7 @@ void CGameClient::ProcessInfClassPlayerInfo(int ClientID, const CNetObj_InfClass
 void CGameClient::ProcessInfClassClassInfo(int ClientID, const CNetObj_InfClassClassInfo *pClassInfo)
 {
 	CClientData *pClient = &m_aClients[ClientID];
+	pClient->m_InfClassClassFlags = pClassInfo->m_Flags;
 	pClient->m_InfClassClassData1 = pClassInfo->m_Data1;
 }
 
