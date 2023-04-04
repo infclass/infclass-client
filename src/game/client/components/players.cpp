@@ -376,8 +376,30 @@ void CPlayers::RenderPlayer(
 	bool Local = m_pClient->m_Snap.m_LocalClientID == ClientID;
 	bool OtherTeam = m_pClient->IsOtherTeam(ClientID);
 	float Alpha = (OtherTeam || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
-	if((PlayerClass == PLAYERCLASS_GHOST) && (Player.m_Emote == EMOTE_BLINK))
-		Alpha = 0.6;
+
+	if(pClientData)
+	{
+		bool Invisible = false;
+		if(m_pClient->m_InfclassDataVersion >= 2)
+		{
+			if(pClientData->m_InfClassClassFlags & INFCLASS_CLASSINFO_FLAG_IS_INVISIBLE)
+			{
+				Invisible = true;
+			}
+		}
+		else
+		{
+			if((PlayerClass == PLAYERCLASS_GHOST) && (Player.m_Emote == EMOTE_BLINK))
+			{
+				Invisible = true;
+			}
+		}
+
+		if(Invisible)
+		{
+			Alpha = 0.625f;
+		}
+	}
 
 	// set size
 	RenderInfo.m_Size = 64.0f;
