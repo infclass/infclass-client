@@ -9,6 +9,7 @@
 class CInfoMessages : public CComponent
 {
 	int m_SpriteQuadContainerIndex;
+	int m_InfWeaponOffset;
 
 	enum
 	{
@@ -38,6 +39,7 @@ class CInfoMessages : public CComponent
 		CTeeRenderInfo m_KillerRenderInfo;
 
 		// kill msg
+		int m_InfDamageType = -1;
 		int m_Weapon;
 		int m_ModeSpecial; // for CTF, if the guy is carrying a flag for example
 		int m_FlagCarrierBlue;
@@ -62,6 +64,7 @@ class CInfoMessages : public CComponent
 
 	void OnTeamKillMessage(const struct CNetMsg_Sv_KillMsgTeam *pMsg);
 	void OnKillMessage(const struct CNetMsg_Sv_KillMsg *pMsg);
+	void OnInfcKillMessage(const struct CNetMsg_Inf_KillMsg *pMsg);
 	void OnRaceFinishMessage(const struct CNetMsg_Sv_RaceFinish *pMsg);
 
 	void CreateTextContainersIfNotCreated(CInfoMsg &InfoMsg);
