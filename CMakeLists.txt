@@ -2013,6 +2013,7 @@ set_src(ENGINE_GFX GLOB src/engine/gfx
 set_src(GAME_SHARED GLOB src/game
   collision.cpp
   collision.h
+  damage_type.h
   ddracechat.h
   ddracecommands.h
   gamecore.cpp
