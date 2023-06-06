@@ -8,6 +8,7 @@
 class CKillMessages : public CComponent
 {
 	int m_SpriteQuadContainerIndex;
+	int m_InfWeaponOffset;
 	enum
 	{
 		MAX_KILLMSGS = 5,
@@ -18,6 +19,7 @@ public:
 	// kill messages
 	struct CKillMsg
 	{
+		int m_InfDamageType = -1;
 		int m_Weapon;
 
 		int m_aVictimIds[MAX_KILLMSG_TEAM_MEMBERS];
