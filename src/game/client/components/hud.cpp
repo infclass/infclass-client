@@ -1914,6 +1914,10 @@ void CHud::OnRender()
 			{
 				RenderMovementInformation(SpectatorID);
 			}
+			if(SpectatorID != SPEC_FREEVIEW && GameClient()->m_GameInfo.m_InfClass)
+			{
+				RenderClassExtraHud(SpectatorID);
+			}
 			RenderSpectatorHud();
 		}
 
