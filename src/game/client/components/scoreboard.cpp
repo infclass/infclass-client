@@ -317,8 +317,9 @@ void CScoreboard::RenderScoreboard(float x, float y, float w, int Team, const ch
 
 	TextRender()->Text(NameOffset, y + (HeadlineFontsize * 2.f - HeadlineFontsize) / 2.f, HeadlineFontsize, Localize("Name"), -1.0f);
 
-	tw = TextRender()->TextWidth(HeadlineFontsize, Localize("Clan"), -1, -1.0f);
-	TextRender()->Text(ClanOffset + (ClanLength - tw) / 2, y + (HeadlineFontsize * 2.f - HeadlineFontsize) / 2.f, HeadlineFontsize, Localize("Clan"), -1.0f);
+	const char *pClanColumnName = GameClient()->m_GameInfo.m_InfClass ? Localize("Class") : Localize("Clan");
+	tw = TextRender()->TextWidth(HeadlineFontsize, pClanColumnName, -1, -1.0f);
+	TextRender()->Text(ClanOffset + (ClanLength - tw) / 2, y + (HeadlineFontsize * 2.f - HeadlineFontsize) / 2.f, HeadlineFontsize, pClanColumnName, -1.0f);
 
 	tw = TextRender()->TextWidth(HeadlineFontsize, Localize("Ping"), -1, -1.0f);
 	TextRender()->Text(PingOffset + PingLength - tw, y + (HeadlineFontsize * 2.f - HeadlineFontsize) / 2.f, HeadlineFontsize, Localize("Ping"), -1.0f);
