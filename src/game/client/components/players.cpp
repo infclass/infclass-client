@@ -572,7 +572,8 @@ void CPlayers::RenderPlayer(
 				float Scale = 1.0f;
 				if(PlayerClass == PLAYERCLASS_TANK)
 				{
-					Scale = 1.4f;
+					Scale = 1.45f;
+					WeaponPosition += Dir * 8;
 				}
 				Graphics()->RenderQuadContainerAsSprite(m_WeaponEmoteQuadContainerIndex, QuadOffset, WeaponPosition.x, WeaponPosition.y, Scale, Scale);
 			}
@@ -710,6 +711,11 @@ void CPlayers::RenderPlayer(
 			case WEAPON_GUN: RenderHand(&RenderInfo, WeaponPosition, Direction, -3 * pi / 4, vec2(-15, 4), Alpha); break;
 			case WEAPON_SHOTGUN: RenderHand(&RenderInfo, WeaponPosition, Direction, -pi / 2, vec2(-5, 4), Alpha); break;
 			case WEAPON_GRENADE: RenderHand(&RenderInfo, WeaponPosition, Direction, -pi / 2, vec2(-4, 7), Alpha); break;
+			}
+
+			if(PlayerClass == PLAYERCLASS_TANK)
+			{
+				RenderHand(&RenderInfo, WeaponPosition, Direction, -3 * pi / 4, vec2(-5, 4), Alpha);
 			}
 		}
 	}
