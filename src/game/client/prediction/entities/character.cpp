@@ -389,30 +389,7 @@ void CCharacter::FireWeapon()
 
 	case WEAPON_SHOTGUN:
 	{
-		if(GameWorld()->m_WorldConfig.m_IsVanilla)
-		{
-			int ShotSpread = 2;
-			for(int i = -ShotSpread; i <= ShotSpread; ++i)
-			{
-				const float aSpreading[] = {-0.185f, -0.070f, 0, 0.070f, 0.185f};
-				float a = angle(Direction);
-				a += aSpreading[i + 2];
-				float v = 1 - (absolute(i) / (float)ShotSpread);
-				float Speed = mix((float)Tuning()->m_ShotgunSpeeddiff, 1.0f, v);
-				new CProjectile(
-					GameWorld(),
-					WEAPON_SHOTGUN, //Type
-					GetCID(), //Owner
-					ProjStartPos, //Pos
-					direction(a) * Speed, //Dir
-					(int)(GameWorld()->GameTickSpeed() * Tuning()->m_ShotgunLifetime), //Span
-					false, //Freeze
-					false, //Explosive
-					-1 //SoundImpact
-				);
-			}
-		}
-		else if(GameWorld()->m_WorldConfig.m_IsInfClass)
+		if(GameWorld()->m_WorldConfig.m_IsInfClass)
 		{
 			int ShotSpread = 3;
 			if(GetPlayerClass() == PLAYERCLASS_BIOLOGIST)
@@ -431,14 +408,37 @@ void CCharacter::FireWeapon()
 
 				new CProjectile(
 					GameWorld(),
+					WEAPON_SHOTGUN, // Type
+					GetCID(), // Owner
+					ProjStartPos, // Pos
+					vec2(cosf(a), sinf(a)) * Speed, // Dir
+					(int)(GameWorld()->GameTickSpeed() * LifeTime), // Span
+					false, // Freeze
+					false, // Explosive
+					0, // Force
+					-1 // SoundImpact
+				);
+			}
+		}
+		else if(GameWorld()->m_WorldConfig.m_IsVanilla)
+		{
+			int ShotSpread = 2;
+			for(int i = -ShotSpread; i <= ShotSpread; ++i)
+			{
+				const float aSpreading[] = {-0.185f, -0.070f, 0, 0.070f, 0.185f};
+				float a = angle(Direction);
+				a += aSpreading[i + 2];
+				float v = 1 - (absolute(i) / (float)ShotSpread);
+				float Speed = mix((float)Tuning()->m_ShotgunSpeeddiff, 1.0f, v);
+				new CProjectile(
+					GameWorld(),
 					WEAPON_SHOTGUN, //Type
 					GetCID(), //Owner
 					ProjStartPos, //Pos
-					vec2(cosf(a), sinf(a)) * Speed, //Dir
-					(int)(GameWorld()->GameTickSpeed() * LifeTime), //Span
+					direction(a) * Speed, //Dir
+					(int)(GameWorld()->GameTickSpeed() * Tuning()->m_ShotgunLifetime), //Span
 					false, //Freeze
 					false, //Explosive
-					0, //Force
 					-1 //SoundImpact
 				);
 			}
