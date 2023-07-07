@@ -587,6 +587,7 @@ protected:
 	void RenderSettingsControls(CUIRect MainView);
 	void ResetSettingsControls();
 	void RenderSettingsInfClassControls(CUIRect MainView);
+	void ResetSettingsInfclassControls();
 	void RenderSettingsGraphics(CUIRect MainView);
 	void RenderSettingsSound(CUIRect MainView);
 	void RenderSettings(CUIRect MainView);
