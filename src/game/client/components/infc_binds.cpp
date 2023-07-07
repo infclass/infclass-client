@@ -15,7 +15,7 @@ void CInfCBinds::OnConsoleInit()
 	Console()->Register("infc_unbindall", "", CFGFLAG_CLIENT, ConUnbindAll, this, "Unbind all keys");
 
 	// default bindings
-	SetDefaults();
+	LoadPreset();
 }
 
 bool CInfCBinds::OnInput(const IInput::CEvent &Event)
@@ -57,7 +57,7 @@ void CInfCBinds::ConfigSaveCallback(IConfigManager *pConfigManager, void *pUserD
 	}
 }
 
-void CInfCBinds::SetDefaults()
+void CInfCBinds::LoadPreset()
 {
 	UnbindAll();
 
