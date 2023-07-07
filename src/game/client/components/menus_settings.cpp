@@ -2816,6 +2816,7 @@ void CMenus::RenderSettingsAppearance(CUIRect MainView)
 		RightView.HSplitTop(SectionTotalMargin + 4 * LineSize, &Section, &RightView);
 		Section.Margin(SectionMargin, &Section);
 
+		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_InfUseDDRaceHUD, Localize("Use DDRace HUD for Infclass"), &g_Config.m_InfUseDDRaceHUD, &Section, LineSize);
 		DoButton_CheckBoxAutoVMarginAndSet(&g_Config.m_InfcShowHookProtection, Localize("Show player hook protection"), &g_Config.m_InfcShowHookProtection, &Section, LineSize);
 	}
 	else if(s_CurTab == APPEARANCE_TAB_CHAT)
