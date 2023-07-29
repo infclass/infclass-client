@@ -1806,6 +1806,9 @@ void CHud::RenderClassExtraHud(int ClientID)
 		{
 		case PLAYERCLASS_ENGINEER:
 		case PLAYERCLASS_LOOPER:
+			if(RemainingSeconds == FractionPartIfLessThan)
+				m_pClient->m_Sounds.Play(CSounds::CHN_GUI, SOUND_ALARM, 1.0f);
+
 			if(RemainingSeconds < FractionPartIfLessThan)
 			{
 				TextColor = ColorRGBA(1.0f, 0.5f, 0.5f, 1.0f);
