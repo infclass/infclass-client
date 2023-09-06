@@ -28,6 +28,7 @@ CCharacter::CCharacter(CGameWorld *pWorld, CNetObj_PlayerInput LastInput) :
 {
 	m_Health = 0;
 	m_Armor = 0;
+	m_ArmorIndicator = 0;
 	m_StrongWeakID = 0;
 
 	m_Input = LastInput;
@@ -234,7 +235,7 @@ void CCharacter::HandleNinja()
 		GameServer()->CreateDamageInd(m_Pos, 0, NinjaTime / Server()->TickSpeed(), TeamMask() & GameServer()->ClientsMaskExcludeClientVersionAndHigher(VERSION_DDNET_NEW_HUD));
 	}
 
-	m_Armor = clamp(10 - (NinjaTime / 15), 0, 10);
+	m_ArmorIndicator = clamp(10 - (NinjaTime / 15), 0, 10);
 
 	// force ninja Weapon
 	SetWeapon(WEAPON_NINJA);
@@ -1032,7 +1033,7 @@ void CCharacter::SnapCharacter(int SnappingClient, int ID)
 		(!g_Config.m_SvStrictSpectateMode && m_pPlayer->GetCID() == GameServer()->m_apPlayers[SnappingClient]->m_SpectatorID))
 	{
 		Health = m_Health;
-		Armor = m_Armor;
+		Armor = m_ArmorIndicator;
 		if(m_Core.m_aWeapons[m_Core.m_ActiveWeapon].m_Ammo > 0)
 			AmmoCount = (m_FreezeTime == 0) ? m_Core.m_aWeapons[m_Core.m_ActiveWeapon].m_Ammo : 0;
 	}
@@ -1981,7 +1982,7 @@ void CCharacter::SetRescue()
 void CCharacter::DDRaceTick()
 {
 	mem_copy(&m_Input, &m_SavedInput, sizeof(m_Input));
-	m_Armor = clamp(10 - (m_FreezeTime / 15), 0, 10);
+	m_ArmorIndicator = clamp(10 - (m_FreezeTime / 15), 0, 10);
 	if(m_Input.m_Direction != 0 || m_Input.m_Jump != 0)
 		m_LastMove = Server()->Tick();
 
@@ -2141,7 +2142,7 @@ bool CCharacter::Freeze(int Seconds)
 		return false;
 	if(m_Core.m_FreezeStart < Server()->Tick() - Server()->TickSpeed())
 	{
-		m_Armor = 0;
+		m_ArmorIndicator = 0;
 		m_FreezeTime = Seconds * Server()->TickSpeed();
 		m_Core.m_FreezeStart = Server()->Tick();
 		return true;
@@ -2158,7 +2159,7 @@ bool CCharacter::UnFreeze()
 {
 	if(m_FreezeTime > 0)
 	{
-		m_Armor = 10;
+		m_ArmorIndicator = 10;
 		if(!m_Core.m_aWeapons[m_Core.m_ActiveWeapon].m_Got)
 			m_Core.m_ActiveWeapon = WEAPON_GUN;
 		m_FreezeTime = 0;

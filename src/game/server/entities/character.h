@@ -212,6 +212,7 @@ public:
 	vec2 m_TeleGunPos;
 	bool m_TeleGunTeleport;
 	bool m_IsBlueTeleGunTeleport;
+	int m_ArmorIndicator;
 	int m_StrongWeakID;
 
 	int m_SpawnTick;
