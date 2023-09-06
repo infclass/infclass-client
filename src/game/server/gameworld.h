@@ -165,6 +165,12 @@ public:
 	*/
 	std::vector<CCharacter *> IntersectedCharacters(vec2 Pos0, vec2 Pos1, float Radius, const CEntity *pNotThis = nullptr);
 
+	int m_GameTick;
+	int m_GameTickSpeed;
+
+	int GameTick() { return m_GameTick; }
+	int GameTickSpeed() { return m_GameTickSpeed; }
+
 	CTuningParams *Tuning();
 
 	CTuningParams *m_pTuningList;

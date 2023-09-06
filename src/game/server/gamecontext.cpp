@@ -945,6 +945,7 @@ void CGameContext::OnTick()
 
 	// copy tuning
 	m_World.m_Core.m_aTuning[0] = m_Tuning;
+	m_World.m_GameTick = Server()->Tick();
 	m_World.Tick();
 
 	UpdatePlayerMaps();
@@ -3464,7 +3465,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 	m_pAntibot = Kernel()->RequestInterface<IAntibot>();
 	m_World.SetGameServer(this);
 	m_Events.SetGameServer(this);
-
+	
 	m_GameUuid = RandomUuid();
 	Console()->SetTeeHistorianCommandCallback(CommandCallback, this);
 
@@ -3480,6 +3481,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 
 	m_Layers.Init(Kernel());
 	m_Collision.Init(&m_Layers);
+	m_World.m_GameTickSpeed = SERVER_TICK_SPEED;
 	m_World.m_pTuningList = m_aTuningList;
 	m_World.m_Core.InitSwitchers(m_Collision.m_HighestSwitchNumber);
 
