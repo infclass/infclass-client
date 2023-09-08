@@ -421,8 +421,12 @@ void CCharacterCore::TickDeferred()
 			// player *p = (player*)ent;
 			// if(pCharCore == this) // || !(p->flags&FLAG_ALIVE)
 
-			if(pCharCore == this || (m_Id != -1 && !m_pTeams->CanCollide(m_Id, i)))
+			if(pCharCore == this)
 				continue; // make sure that we don't nudge our self
+
+			bool PlayersCanCollide = m_Id == -1 || m_pTeams->CanCollide(m_Id, i);
+			if(!PlayersCanCollide)
+				continue;
 
 			if(!(m_Super || pCharCore->m_Super) && (m_Solo || pCharCore->m_Solo))
 				continue;
@@ -433,9 +437,9 @@ void CCharacterCore::TickDeferred()
 			{
 				vec2 Dir = normalize(m_Pos - pCharCore->m_Pos);
 
-				bool CanCollide = (m_Super || pCharCore->m_Super) || (!m_CollisionDisabled && !pCharCore->m_CollisionDisabled && m_Tuning.m_PlayerCollision);
+				bool CharactersCanCollide = (m_Super || pCharCore->m_Super) || (!m_CollisionDisabled && !pCharCore->m_CollisionDisabled && m_Tuning.m_PlayerCollision);
 
-				if(CanCollide && Distance < PhysicalSize() * 1.25f && Distance > 0.0f)
+				if(CharactersCanCollide && PlayersCanCollide && Distance < PhysicalSize() * 1.25f && Distance > 0.0f)
 				{
 					float a = (PhysicalSize() * 1.45f - Distance);
 					float Velocity = 0.5f;
