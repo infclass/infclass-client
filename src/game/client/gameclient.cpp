@@ -1437,7 +1437,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	Info.m_HudAmmo = true;
 	Info.m_HudDDRace = false;
 	Info.m_NoWeakHookAndBounce = false;
-	Info.m_NoSkinChangeForFrozen = false;
+	Info.m_NoSkinChangeForFrozen = Infclass;
 
 	if(Version >= 0)
 	{
