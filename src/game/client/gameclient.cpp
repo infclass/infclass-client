@@ -2886,6 +2886,9 @@ void CGameClient::ProcessInfClassPlayerInfo(int ClientID, const CNetObj_InfClass
 	case PLAYERCLASS_GHOST:
 		pSkin = m_Skins.Find("ghost");
 		break;
+	case PLAYERCLASS_TANK:
+		pSkin = m_Skins.Find("zombie");
+		break;
 	default:
 		break;
 	}
