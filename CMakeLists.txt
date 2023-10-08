@@ -1703,6 +1703,7 @@ set(EXPECTED_DATA
   skins/whis.png
   skins/x_ninja.png
   skins/x_spec.png
+  skins/zombie.png
   strong_weak.png
   themes/auto.png
   themes/autumn.png
