@@ -2081,6 +2081,7 @@ set_src(ENGINE_SHARED GLOB_RECURSE src/engine/shared
   http.h
   huffman.cpp
   huffman.h
+  infclass.h
   jobs.cpp
   jobs.h
   json.cpp
