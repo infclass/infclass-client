@@ -2156,6 +2156,7 @@ if(CLIENT)
     graphics_defines.h
     graphics_threaded.cpp
     graphics_threaded.h
+    infclass.h
     input.cpp
     input.h
     keynames.h
