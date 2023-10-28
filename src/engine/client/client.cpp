@@ -26,6 +26,8 @@
 #include <engine/storage.h>
 #include <engine/textrender.h>
 
+#include <engine/client/infclass.h>
+#include <engine/client/notifications.h>
 #include <engine/shared/assertion_logger.h>
 #include <engine/shared/compression.h>
 #include <engine/shared/config.h>
@@ -226,6 +228,10 @@ void CClient::SendInfo(int Conn)
 		SendMsg(Conn, &Msg, MSGFLAG_VITAL | MSGFLAG_FLUSH);
 		return;
 	}
+
+	CMsgPacker MsgVerInfclass(NETMSG_CLIENTVER_INFCLASS, true);
+	MsgVerInfclass.AddInt(INFCLASS_CLIENT_VERSION);
+	SendMsg(Conn, &MsgVerInfclass, MSGFLAG_VITAL);
 
 	CMsgPacker Msg(NETMSG_INFO, true);
 	Msg.AddString(GameClient()->NetVersion());
