@@ -287,6 +287,9 @@ public:
 	int m_InfClassHeroGiftTick;
 	int m_InfclassGameInfoVersion;
 
+	int m_InfclassGameParamsVersion = 0;
+	int m_InfClassWhiteHoleMinKills = 0;
+
 	int m_DemoSpecID;
 
 	vec2 m_LocalCharacterPos;
