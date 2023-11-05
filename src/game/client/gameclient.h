@@ -289,6 +289,7 @@ public:
 
 	int m_InfclassGameParamsVersion = 0;
 	int m_InfClassWhiteHoleMinKills = 0;
+	int m_InfClassSoldierBombs = 0;
 
 	int m_DemoSpecID;
 
