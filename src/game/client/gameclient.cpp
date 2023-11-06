@@ -2943,6 +2943,8 @@ void CGameClient::ProcessInfClassClassInfo(int ClientID, const CNetObj_InfClassC
 
 void CGameClient::ProcessInfClassGameInfo(const CNetObj_InfClassGameInfo *pGameInfo)
 {
+	m_GameInfo.m_InfClass = true;
+
 	m_InfclassGameInfoVersion = pGameInfo->m_Version;
 	m_TimeLimitInSeconds = pGameInfo->m_TimeLimitInSeconds;
 	m_InfClassHeroGiftTick = pGameInfo->m_HeroGiftTick;
