@@ -144,6 +144,8 @@ void CLayerTiles::Render(bool Tileset)
 		Texture = m_pEditor->GetSwitchTexture();
 	else if(m_Tune)
 		Texture = m_pEditor->GetTuneTexture();
+	else if (m_pPtumZoneType)
+		Texture = m_pEditor->GetPTUMEntitiesTexture(m_pPtumZoneType);
 	Graphics()->TextureSet(Texture);
 
 	ColorRGBA ColorEnv = ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f);
@@ -274,6 +276,7 @@ static void InitGrabbedLayer(std::shared_ptr<T> pLayer, CLayerTiles *pThisLayer)
 	pLayer->m_Speedup = pThisLayer->m_Speedup;
 	pLayer->m_Switch = pThisLayer->m_Switch;
 	pLayer->m_Tune = pThisLayer->m_Tune;
+	pLayer->m_pPtumZoneType = pThisLayer->m_pPtumZoneType;
 	if(pThisLayer->m_pEditor->m_BrushColorEnabled)
 	{
 		pLayer->m_Color = pThisLayer->m_Color;
@@ -697,7 +700,7 @@ CUi::EPopupMenuFunctionResult CLayerTiles::RenderProperties(CUIRect *pToolBox)
 {
 	CUIRect Button;
 
-	const bool EntitiesLayer = IsEntitiesLayer();
+	const bool EntitiesLayer = IsEntitiesLayer() || m_pPtumZoneType;
 
 	std::shared_ptr<CLayerGroup> pGroup = m_pEditor->m_Map.m_vpGroups[m_pEditor->m_SelectedGroup];
 
