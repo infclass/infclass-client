@@ -4737,6 +4737,12 @@ int main(int argc, const char **argv)
 		pConsole->SetUnknownCommandCallback(IConsole::EmptyUnknownCommandCallback, nullptr);
 	}
 
+	// execute infclass file
+	if(pStorage->FileExists(INFC_CONFIG_FILE, IStorage::TYPE_ALL))
+	{
+		pConsole->ExecuteFile(INFC_CONFIG_FILE);
+	}
+
 	// execute autoexec file
 	if(pStorage->FileExists(AUTOEXEC_CLIENT_FILE, IStorage::TYPE_ALL))
 	{
