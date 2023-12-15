@@ -382,6 +382,17 @@ bool CConfigManager::Save()
 
 	m_Failed = false;
 
+	char aInfCConfigFileTmp[IO_MAX_PATH_LENGTH];
+	m_InfClassConfigFile = m_pStorage->OpenFile(IStorage::FormatTmpPath(aInfCConfigFileTmp, sizeof(aInfCConfigFileTmp), INFC_CONFIG_FILE), IOFLAG_WRITE, IStorage::TYPE_SAVE);
+
+	if(!m_InfClassConfigFile)
+	{
+		log_error("config", "ERROR: opening %s failed", aInfCConfigFileTmp);
+		return false;
+	}
+
+	m_InfClassFailed = false;
+
 	char aLineBuf[2048];
 	for(const SConfigVariable *pVariable : m_vpAllVariables)
 	{
@@ -419,10 +430,29 @@ bool CConfigManager::Save()
 		log_error("config", "ERROR: closing %s failed", aConfigFileTmp);
 	}
 
+	if(io_sync(m_InfClassConfigFile) != 0)
+	{
+		m_InfClassFailed = true;
+		log_error("config", "ERROR: synchronizing %s failed", aInfCConfigFileTmp);
+	}
+
+	if(io_close(m_InfClassConfigFile) != 0)
+	{
+		m_InfClassFailed = true;
+		log_error("config", "ERROR: closing %s failed", aInfCConfigFileTmp);
+	}
+
 	m_ConfigFile = 0;
+	m_InfClassConfigFile = 0;
 
 	if(m_Failed)
 	{
+		return false;
+	}
+
+	if(m_InfClassFailed)
+	{
+		log_error("config", "ERROR: writing to %s failed", aInfCConfigFileTmp);
 		return false;
 	}
 
@@ -431,8 +461,15 @@ bool CConfigManager::Save()
 		log_error("config", "ERROR: renaming %s to " CONFIG_FILE " failed", aConfigFileTmp);
 		return false;
 	}
-
 	log_info("config", "saved to " CONFIG_FILE);
+
+	if(!m_pStorage->RenameFile(aInfCConfigFileTmp, INFC_CONFIG_FILE, IStorage::TYPE_SAVE))
+	{
+		log_error("config", "ERROR: renaming %s to " INFC_CONFIG_FILE " failed", aInfCConfigFileTmp);
+		return false;
+	}
+	log_info("config", "saved to " INFC_CONFIG_FILE);
+
 	return true;
 }
 
@@ -446,6 +483,16 @@ void CConfigManager::WriteLine(const char *pLine)
 	if(!m_ConfigFile ||
 		io_write(m_ConfigFile, pLine, str_length(pLine)) != static_cast<unsigned>(str_length(pLine)) ||
 		!io_write_newline(m_ConfigFile))
+	{
+		m_Failed = true;
+	}
+}
+
+void CConfigManager::InfClassWriteLine(const char *pLine)
+{
+	if(!m_InfClassConfigFile ||
+		io_write(m_InfClassConfigFile, pLine, str_length(pLine)) != static_cast<unsigned>(str_length(pLine)) ||
+		!io_write_newline(m_InfClassConfigFile))
 	{
 		m_Failed = true;
 	}
