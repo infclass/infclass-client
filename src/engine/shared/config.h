@@ -33,6 +33,7 @@ public:
 	static constexpr const char *ms_p##Name = Def; \
 	char m_##Name[Len]; // Flawfinder: ignore
 #include "config_variables.h"
+#include "infc_config_variables.h"
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_COL
 #undef MACRO_CONFIG_STR
@@ -77,6 +78,7 @@ struct SConfigVariable
 	// Note that this only applies to the console command and the SetValue function,
 	// but the underlying config variable can still be modified programatically.
 	bool m_ReadOnly = false;
+	bool m_InfclassSpecific = false;
 
 	SConfigVariable(IConsole *pConsole, const char *pScriptName, EVariableType Type, int Flags, const char *pHelp) :
 		m_pConsole(pConsole),

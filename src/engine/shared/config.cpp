@@ -285,8 +285,10 @@ void CConfigManager::Init()
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
 
+	static bool InfclassVariable = false;
 	const auto &&AddVariable = [this](SConfigVariable *pVariable) {
 		m_vpAllVariables.push_back(pVariable);
+		pVariable->m_InfclassSpecific = InfclassVariable;
 		if((pVariable->m_Flags & CFGFLAG_GAME) != 0)
 			m_vpGameVariables.push_back(pVariable);
 		pVariable->Register();
@@ -317,6 +319,8 @@ void CConfigManager::Init()
 	}
 
 #include "config_variables.h"
+	InfclassVariable = true;
+#include "infc_config_variables.h"
 
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_COL
@@ -399,7 +403,14 @@ bool CConfigManager::Save()
 		if((pVariable->m_Flags & CFGFLAG_SAVE) != 0 && !pVariable->IsDefault())
 		{
 			pVariable->Serialize(aLineBuf, sizeof(aLineBuf));
-			WriteLine(aLineBuf);
+			if(pVariable->m_InfclassSpecific)
+			{
+				InfClassWriteLine(aLineBuf);
+			}
+			else
+			{
+				WriteLine(aLineBuf);
+			}
 		}
 	}
 
