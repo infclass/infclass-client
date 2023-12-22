@@ -363,10 +363,6 @@ void CItems::RenderInfclassObject(const CNetObj_InfClassObject *pCurrent, bool I
 		}
 	}
 
-	const CNetObj_Character *pLocalCharacter = m_pClient->m_Snap.m_pLocalCharacter;
-	if(!pLocalCharacter)
-		return;
-
 	int LocalCID = m_pClient->m_aLocalIDs[g_Config.m_ClDummy];
 	int SpecCID = m_pClient->m_Snap.m_SpecInfo.m_SpectatorID;
 	int CameraCID = m_pClient->m_Snap.m_SpecInfo.m_Active ? SpecCID : LocalCID;
