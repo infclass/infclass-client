@@ -802,7 +802,7 @@ void CMenus::RenderSkinSelection7(CUIRect MainView)
 	if(m_RefreshSkinSelector)
 	{
 		s_paSkinList.clear();
-		for(int i = 0; i < m_pClient->m_Skins.Num(); ++i)
+		for(int i = 0; i < m_pClient->m_Skins7.Num(); ++i)
 		{
 			const CSkins7::CSkin *s = m_pClient->m_Skins7.Get(i);
 			// no special skins
