@@ -24,7 +24,7 @@ char *CSkins7::ms_apSkinVariables[NUM_DUMMIES][NUM_SKINPARTS] = {{0}};
 int *CSkins7::ms_apUCCVariables[NUM_DUMMIES][NUM_SKINPARTS] = {{0}};
 int *CSkins7::ms_apColorVariables[NUM_DUMMIES][NUM_SKINPARTS] = {{0}};
 
-#define SKINS_DIR "skins"
+#define SKINS_DIR "skins7"
 
 // TODO: uncomment
 // const float MIN_EYE_BODY_COLOR_DIST = 80.f; // between body and eyes (LAB color space)
