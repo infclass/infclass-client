@@ -471,7 +471,8 @@ void CSkins7::RandomizeSkin(int Dummy)
 
 vec3 CSkins7::GetColorV3(int v) const
 {
-	ColorRGBA color = color_cast<ColorRGBA>(ColorHSLA(v));
+	float Dark = DARKEST_COLOR_LGT / 255.0f;
+	ColorRGBA color = color_cast<ColorRGBA>(ColorHSLA(v).UnclampLighting(Dark));
 	return vec3(color.r, color.g, color.b);
 }
 
