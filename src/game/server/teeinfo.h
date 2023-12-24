@@ -1,6 +1,9 @@
 #ifndef GAME_SERVER_TEEINFO_H
 #define GAME_SERVER_TEEINFO_H
 
+#include <engine/shared/protocol.h>
+#include <game/generated/protocol.h>
+
 class CTeeInfo
 {
 public:
@@ -12,16 +15,14 @@ public:
 	int m_ColorFeet = 0;
 
 	// 0.7
-	char m_apSkinPartNames[6][24] = {"", "", "", "", "", ""};
-	bool m_aUseCustomColors[6] = {false, false, false, false, false, false};
-	int m_aSkinPartColors[6] = {0, 0, 0, 0, 0, 0};
+	char m_apSkinPartNames[NUM_SKINPARTS][MAX_SKIN_LENGTH]{};
+	bool m_aUseCustomColors[NUM_SKINPARTS]{};
+	int m_aSkinPartColors[NUM_SKINPARTS]{};
 
 	CTeeInfo() = default;
 
 	CTeeInfo(const char *pSkinName, int UseCustomColor, int ColorBody, int ColorFeet);
-
-	// This constructor will assume all arrays are of length 6
-	CTeeInfo(const char *apSkinPartNames[6], const int *pUseCustomColors, const int *pSkinPartColors);
+	CTeeInfo(const char *apSkinPartNames[NUM_SKINPARTS], const int (&aUseCustomColors)[NUM_SKINPARTS], const int (&aSkinPartColors)[NUM_SKINPARTS]);
 
 	void FromSixup();
 	void ToSixup();
