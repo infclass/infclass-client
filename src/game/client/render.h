@@ -67,9 +67,9 @@ public:
 
 	// 0.7
 	IGraphics::CTextureHandle m_aTextures[NUM_SKINPARTS];
-	vec4 m_aColors[NUM_SKINPARTS];
+	ColorRGBA m_aColors[NUM_SKINPARTS];
 	IGraphics::CTextureHandle m_BotTexture;
-	vec4 m_BotColor;
+	ColorRGBA m_BotColor;
 };
 
 // Tee Render Flags
