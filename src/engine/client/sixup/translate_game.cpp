@@ -77,14 +77,24 @@ void CGameClient::DoTeamChangeMessage7(const char *pName, int ClientID, int Team
 template<typename T>
 void CGameClient::ApplySkin7InfoFromGameMsg(const T *pMsg, CClientData *pClient)
 {
+	char *apSkinPartsPtr[NUM_SKINPARTS];
+	for(int i = 0; i < NUM_SKINPARTS; i++)
+	{
+		str_utf8_copy_num(pClient->m_aaSkinPartNames[i], pMsg->m_apSkinPartNames[i], sizeof(pClient->m_aaSkinPartNames[i]), MAX_SKIN_LENGTH);
+		apSkinPartsPtr[i] = pClient->m_aaSkinPartNames[i];
+		pClient->m_aUseCustomColors[i] = pMsg->m_aUseCustomColors[i];
+		pClient->m_aSkinPartColors[i] = pMsg->m_aSkinPartColors[i];
+	}
+	m_Skins7.ValidateSkinParts(apSkinPartsPtr, pClient->m_aUseCustomColors, pClient->m_aSkinPartColors, m_pClient->m_TranslationContext.m_GameFlags);
+
 	for(int p = 0; p < NUM_SKINPARTS; p++)
 	{
-		int ID = m_Skins7.FindSkinPart(p, pMsg->m_apSkinPartNames[p], false);
+		int ID = m_Skins7.FindSkinPart(p, pClient->m_aaSkinPartNames[p], false);
 		const CSkins7::CSkinPart *pSkinPart = m_Skins7.GetSkinPart(p, ID);
-		if(pMsg->m_aUseCustomColors[p])
+		if(pClient->m_aUseCustomColors[p])
 		{
 			pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_ColorTexture;
-			pClient->m_SkinInfo.m_aColors[p] = m_Skins7.GetColorV4(pMsg->m_aSkinPartColors[p], p == protocol7::SKINPART_MARKING);
+			pClient->m_SkinInfo.m_aColors[p] = m_Skins7.GetColorV4(pClient->m_aSkinPartColors[p], p == protocol7::SKINPART_MARKING);
 		}
 		else
 		{

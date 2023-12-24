@@ -2267,6 +2267,13 @@ void CGameClient::CClientData::Reset()
 	m_Country = -1;
 	m_aSkinName[0] = '\0';
 	m_SkinColor = 0;
+	for(int i = 0; i < NUM_SKINPARTS; ++i)
+	{
+		m_aaSkinPartNames[i][0] = '\0';
+		m_aUseCustomColors[i] = 0;
+		m_aSkinPartColors[i] = 0;
+		m_SkinPartIDs[i] = 0;
+	}
 	m_Team = 0;
 	m_Angle = 0;
 	m_Emoticon = 0;

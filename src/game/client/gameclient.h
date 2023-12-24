@@ -361,6 +361,13 @@ public:
 		int m_Country;
 		char m_aSkinName[64];
 		int m_SkinColor;
+
+		// 0.7 Skin
+		char m_aaSkinPartNames[NUM_SKINPARTS][MAX_SKIN_LENGTH];
+		int m_aUseCustomColors[NUM_SKINPARTS];
+		int m_aSkinPartColors[NUM_SKINPARTS];
+		int m_SkinPartIDs[NUM_SKINPARTS];
+
 		int m_Team;
 		int m_Emoticon;
 		float m_EmoticonStartFraction;
