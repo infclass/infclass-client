@@ -535,7 +535,7 @@ void CMenus::RenderSettingsTee7(CUIRect MainView)
 			aColorVars[p] = *CSkins7::ms_apColorVariables[(int)m_Dummy][p];
 		}
 
-		// m_pClient->m_pSkins->ValidateSkinParts(apSkinPartsPtr, aUCCVars, aColorVars, 0);
+		m_pClient->m_Skins7.ValidateSkinParts(apSkinPartsPtr, aUCCVars, aColorVars, 0);
 
 		for(int p = 0; p < NUM_SKINPARTS; p++)
 		{
@@ -587,7 +587,7 @@ void CMenus::RenderSettingsTee7(CUIRect MainView)
 			aColorVars[p] = *CSkins7::ms_apColorVariables[(int)m_Dummy][p];
 		}
 
-		// m_pClient->m_pSkins->ValidateSkinParts(apSkinPartsPtr, aUCCVars, aColorVars, GAMEFLAG_TEAMS);
+		m_pClient->m_Skins7.ValidateSkinParts(apSkinPartsPtr, aUCCVars, aColorVars, GAMEFLAG_TEAMS);
 
 		for(int p = 0; p < NUM_SKINPARTS; p++)
 		{
