@@ -74,6 +74,26 @@ void CGameClient::DoTeamChangeMessage7(const char *pName, int ClientID, int Team
 	m_Chat.AddLine(-1, 0, aBuf);
 }
 
+template<typename T>
+void CGameClient::ApplySkin7InfoFromGameMsg(const T *pMsg, CClientData *pClient)
+{
+	for(int p = 0; p < NUM_SKINPARTS; p++)
+	{
+		int ID = m_Skins7.FindSkinPart(p, pMsg->m_apSkinPartNames[p], false);
+		const CSkins7::CSkinPart *pSkinPart = m_Skins7.GetSkinPart(p, ID);
+		if(pMsg->m_aUseCustomColors[p])
+		{
+			pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_ColorTexture;
+			pClient->m_SkinInfo.m_aColors[p] = m_Skins7.GetColorV4(pMsg->m_aSkinPartColors[p], p == protocol7::SKINPART_MARKING);
+		}
+		else
+		{
+			pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_OrgTexture;
+			pClient->m_SkinInfo.m_aColors[p] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+	}
+}
+
 void *CGameClient::TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker)
 {
 	if(!m_pClient->IsSixup())
@@ -191,21 +211,7 @@ void *CGameClient::TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker)
 		CTranslationContext::CClientData &Client = m_pClient->m_TranslationContext.m_aClients[pMsg7->m_ClientID];
 		Client.m_Active = true;
 		CClientData *pClient = &m_aClients[pMsg7->m_ClientID];
-		for(int p = 0; p < NUM_SKINPARTS; p++)
-		{
-			int ID = m_Skins7.FindSkinPart(p, pMsg7->m_apSkinPartNames[p], false);
-			const CSkins7::CSkinPart *pSkinPart = m_Skins7.GetSkinPart(p, ID);
-			if(pMsg7->m_aUseCustomColors[p])
-			{
-				pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_ColorTexture;
-				pClient->m_SkinInfo.m_aColors[p] = m_Skins7.GetColorV4(pMsg7->m_aSkinPartColors[p], p == protocol7::SKINPART_MARKING);
-			}
-			else
-			{
-				pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_OrgTexture;
-				pClient->m_SkinInfo.m_aColors[p] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			}
-		}
+		ApplySkin7InfoFromGameMsg(pMsg7, pClient);
 		// skin will be moved to the 0.6 snap by the translation context
 		// and we drop the game message
 		return nullptr;
@@ -351,21 +357,7 @@ void *CGameClient::TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker)
 		str_copy(Client.m_aClan, pMsg7->m_pClan, sizeof(Client.m_aClan));
 		Client.m_Country = pMsg7->m_Country;
 		CClientData *pClient = &m_aClients[pMsg7->m_ClientID];
-		for(int p = 0; p < NUM_SKINPARTS; p++)
-		{
-			int ID = m_Skins7.FindSkinPart(p, pMsg7->m_apSkinPartNames[p], false);
-			const CSkins7::CSkinPart *pSkinPart = m_Skins7.GetSkinPart(p, ID);
-			if(pMsg7->m_aUseCustomColors[p])
-			{
-				pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_ColorTexture;
-				pClient->m_SkinInfo.m_aColors[p] = m_Skins7.GetColorV4(pMsg7->m_aSkinPartColors[p], p == protocol7::SKINPART_MARKING);
-			}
-			else
-			{
-				pClient->m_SkinInfo.m_aTextures[p] = pSkinPart->m_OrgTexture;
-				pClient->m_SkinInfo.m_aColors[p] = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			}
-		}
+		ApplySkin7InfoFromGameMsg(pMsg7, pClient);
 
 		if(m_pClient->m_TranslationContext.m_LocalClientID == -1)
 			return nullptr;

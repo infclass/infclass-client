@@ -480,6 +480,8 @@ public:
 	void OnInit() override;
 	void OnConsoleInit() override;
 	void OnStateChange(int NewState, int OldState) override;
+	template <typename T>
+	void ApplySkin7InfoFromGameMsg(const T *pMsg, CClientData *pClient);
 	void *TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker);
 	void OnMessage(int MsgId, CUnpacker *pUnpacker, int Conn, bool Dummy) override;
 	void InvalidateSnapshot() override;
