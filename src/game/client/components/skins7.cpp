@@ -453,7 +453,7 @@ void CSkins7::RandomizeSkin(int Dummy)
 		int Sat = rand() % 255;
 		int Lgt = rand() % 255;
 		int Alp = 0;
-		if(p == 1) // SKINPART_MARKING
+		if(p == SKINPART_MARKING)
 			Alp = rand() % 255;
 		int ColorVariable = (Alp << 24) | (Hue << 16) | (Sat << 8) | Lgt;
 		*CSkins7::ms_apUCCVariables[Dummy][p] = true;
