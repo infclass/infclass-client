@@ -580,4 +580,11 @@ Messages = [
 	NetMessageEx("Sv_CommandInfoRemove", "commandinfo-remove@netmsg.ddnet.org", [
 			NetStringStrict("m_pName")
 	]),
+
+	NetMessageEx("Sv_SkinChange", "skinchange@netmsg.ddnet.tw", [
+		NetIntRange("m_ClientID", 0, 'MAX_CLIENTS-1'),
+		NetArray(NetStringStrict("m_apSkinPartNames"), 6),
+		NetArray(NetBool("m_aUseCustomColors"), 6),
+		NetArray(NetIntAny("m_aSkinPartColors"), 6),
+	]),
 ]

@@ -61,6 +61,9 @@ static CGameMsg7 gs_GameMsgList7[protocol7::NUM_GAMEMSGS] = {
 	{/*GAMEMSG_GAME_PAUSED*/ DO_SPECIAL, PARA_I, ""}, // special - add player name
 };
 
+// Explicitly instantiate the template for 0.6 extended protocol message Sv_SkinChange
+template void CGameClient::ApplySkin7InfoFromGameMsg(const CNetMsg_Sv_SkinChange *pMsg, CClientData *pClient);
+
 void CGameClient::DoTeamChangeMessage7(const char *pName, int ClientID, int Team, const char *pPrefix)
 {
 	char aBuf[128];

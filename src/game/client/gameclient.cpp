@@ -888,7 +888,25 @@ void CGameClient::OnMessage(int MsgId, CUnpacker *pUnpacker, int Conn, bool Dumm
 	for(auto &pComponent : m_vpAll)
 		pComponent->OnMessage(MsgId, pRawMsg);
 
-	if(MsgId == NETMSGTYPE_SV_READYTOENTER)
+	if(MsgId == NETMSGTYPE_SV_SKINCHANGE)
+	{
+		CNetMsg_Sv_SkinChange *pMsg = (CNetMsg_Sv_SkinChange *)pRawMsg;
+		if(pMsg->m_ClientID < 0 || pMsg->m_ClientID >= MAX_CLIENTS)
+		{
+			return;
+		}
+		if(!m_aClients[pMsg->m_ClientID].m_Active)
+		{
+			if(Config()->m_Debug)
+				Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "client", "invalid skin info");
+			return;
+		}
+
+		CClientData *pClient = &m_aClients[pMsg->m_ClientID];
+		ApplySkin7InfoFromGameMsg(pMsg, pClient);
+		pClient->UpdateRenderInfo(IsTeamPlay());
+	}
+	else if(MsgId == NETMSGTYPE_SV_READYTOENTER)
 	{
 		Client()->EnterGame(Conn);
 	}
