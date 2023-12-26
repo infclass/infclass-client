@@ -36,12 +36,12 @@ public:
 	//       the 0.6 code base
 	struct CServerSettings
 	{
-		bool m_KickVote;
-		int m_KickMin;
-		bool m_SpecVote;
-		bool m_TeamLock;
-		bool m_TeamBalance;
-		int m_PlayerSlots;
+		bool m_KickVote = false;
+		int m_KickMin = 0;
+		bool m_SpecVote = false;
+		bool m_TeamLock = false;
+		bool m_TeamBalance = false;
+		int m_PlayerSlots = 0;
 	} m_ServerSettings;
 
 	struct CClientData

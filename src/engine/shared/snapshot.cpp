@@ -480,6 +480,7 @@ void CSnapshotStorage::PurgeAll()
 		CHolder *pNext = m_pFirst->m_pNext;
 		free(m_pFirst->m_pSnap);
 		free(m_pFirst->m_pAltSnap);
+		free(m_pFirst->m_pTransSnap);
 		free(m_pFirst);
 		m_pFirst = pNext;
 	}
@@ -497,6 +498,7 @@ void CSnapshotStorage::PurgeUntil(int Tick)
 			return; // no more to remove
 		free(pHolder->m_pSnap);
 		free(pHolder->m_pAltSnap);
+		free(pHolder->m_pTransSnap);
 		free(pHolder);
 
 		// did we come to the end of the list?
@@ -541,16 +543,13 @@ void CSnapshotStorage::Add(int Tick, int64_t Tagtime, size_t DataSize, const voi
 
 	if(TransDataSize > 0)
 	{
-		if(AltDataSize > 0)
-			pHolder->m_pTransSnap = (CSnapshot *)(((char *)pHolder->m_pAltSnap) + AltDataSize);
-		else
-			pHolder->m_pTransSnap = (CSnapshot *)(((char *)pHolder->m_pSnap) + DataSize);
+		pHolder->m_pTransSnap = static_cast<CSnapshot *>(malloc(TransDataSize));
 		mem_copy(pHolder->m_pTransSnap, pTransData, TransDataSize);
 		pHolder->m_TransSnapSize = TransDataSize;
 	}
 	else
 	{
-		pHolder->m_pTransSnap = 0;
+		pHolder->m_pTransSnap = nullptr;
 		pHolder->m_TransSnapSize = 0;
 	}
 
@@ -577,7 +576,7 @@ int CSnapshotStorage::Get(int Tick, int64_t *pTagtime, const CSnapshot **ppData,
 			if(ppData)
 				*ppData = pHolder->m_pSnap;
 			if(ppAltData)
-				*ppAltData = pHolder->m_pAltSnap;
+				*ppAltData = pHolder->m_pAltSnap; // TODO: 0.7 do we need to use AltSnap() here?
 			return pHolder->m_SnapSize;
 		}
 
