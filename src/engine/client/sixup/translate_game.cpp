@@ -492,7 +492,7 @@ void *CGameClient::TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker)
 				case STR_TEAM_BLUE: pMsg = Localize("All players were moved to the blue team"); break;
 				case STR_TEAM_SPECTATORS: pMsg = Localize("All players were moved to the spectators"); break;
 				}
-				m_Broadcast.DoClientBroadcast7(pMsg);
+				m_Broadcast.DoBroadcast(pMsg); // client side broadcast
 			}
 			break;
 			case protocol7::GAMEMSG_TEAM_BALANCE_VICTIM:
@@ -503,7 +503,7 @@ void *CGameClient::TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker)
 				case STR_TEAM_RED: pMsg = Localize("You were moved to the red team due to team balancing"); break;
 				case STR_TEAM_BLUE: pMsg = Localize("You were moved to the blue team due to team balancing"); break;
 				}
-				m_Broadcast.DoClientBroadcast7(pMsg);
+				m_Broadcast.DoBroadcast(pMsg); // client side broadcast
 			}
 			break;
 			case protocol7::GAMEMSG_CTF_GRAB:
@@ -563,7 +563,7 @@ void *CGameClient::TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker)
 			m_Chat.AddLine(-1, 0, pText);
 			break;
 		case DO_BROADCAST:
-			m_Broadcast.DoClientBroadcast7(pText);
+			m_Broadcast.DoBroadcast(pText); // client side broadcast
 			break;
 		}
 
