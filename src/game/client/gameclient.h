@@ -487,7 +487,7 @@ public:
 	void OnInit() override;
 	void OnConsoleInit() override;
 	void OnStateChange(int NewState, int OldState) override;
-	template <typename T>
+	template<typename T>
 	void ApplySkin7InfoFromGameMsg(const T *pMsg, CClientData *pClient);
 	void *TranslateGameMsg(int *pMsgID, CUnpacker *pUnpacker);
 	void OnMessage(int MsgId, CUnpacker *pUnpacker, int Conn, bool Dummy) override;
@@ -525,8 +525,8 @@ public:
 	// actions
 	// TODO: move these
 	void SendSwitchTeam(int Team);
-	void SendStartInfo7(bool Dummy);
-	void SendSkinChange7(bool Dummy);
+	void SendStartInfo7(bool Dummy) const;
+	void SendSkinChange7(bool Dummy) const;
 	void SendInfo(bool Start);
 	void SendDummyInfo(bool Start) override;
 	void SendKill(int ClientID) const;

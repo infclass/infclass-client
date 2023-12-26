@@ -17,7 +17,7 @@
 
 #include <game/gamecore.h>
 
-int CSnapshot::TranslateSevenToSix(CSnapshot *pSixSnapDest, CTranslationContext &TranslationContext, float LocalTime)
+int CSnapshot::TranslateSevenToSix(CSnapshot *pSixSnapDest, CTranslationContext &TranslationContext, float LocalTime) const
 {
 	CSnapshotBuilder Builder;
 	Builder.Init();

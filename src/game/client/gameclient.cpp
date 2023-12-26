@@ -2340,7 +2340,7 @@ void CGameClient::SendSwitchTeam(int Team)
 		m_Camera.OnReset();
 }
 
-void CGameClient::SendStartInfo7(bool Dummy)
+void CGameClient::SendStartInfo7(bool Dummy) const
 {
 	protocol7::CNetMsg_Cl_StartInfo Msg;
 	Msg.m_pName = Dummy ? Client()->DummyName() : Config()->m_PlayerName;
@@ -2358,7 +2358,7 @@ void CGameClient::SendStartInfo7(bool Dummy)
 	Client()->SendMsg((int)Dummy, &Packer, MSGFLAG_VITAL | MSGFLAG_FLUSH);
 }
 
-void CGameClient::SendSkinChange7(bool Dummy)
+void CGameClient::SendSkinChange7(bool Dummy) const
 {
 	protocol7::CNetMsg_Cl_SkinChange Msg;
 	for(int p = 0; p < NUM_SKINPARTS; p++)

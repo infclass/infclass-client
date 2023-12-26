@@ -277,7 +277,7 @@ void CRenderTools::RenderTee(const CAnimState *pAnim, const CTeeRenderInfo *pInf
 		RenderTee6(pAnim, pInfo, Emote, Dir, Pos, Alpha);
 }
 
-void CRenderTools::RenderTee7(const CAnimState *pAnim, const CTeeRenderInfo *pInfo, int Emote, vec2 Dir, vec2 Pos)
+void CRenderTools::RenderTee7(const CAnimState *pAnim, const CTeeRenderInfo *pInfo, int Emote, vec2 Dir, vec2 Pos) const
 {
 	vec2 Direction = Dir;
 	vec2 Position = Pos;

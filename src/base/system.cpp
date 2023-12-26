@@ -3914,7 +3914,7 @@ void str_utf8_copy_num(char *dst, const char *src, int dst_size, int num)
 {
 	int new_cursor;
 	int cursor = 0;
-	
+
 	while(src[cursor] && num > 0)
 	{
 		new_cursor = str_utf8_forward(src, cursor);
@@ -3924,8 +3924,8 @@ void str_utf8_copy_num(char *dst, const char *src, int dst_size, int num)
 			cursor = new_cursor;
 		--num;
 	}
-	
-	str_copy(dst, src, cursor < dst_size ? cursor+1 : dst_size);
+
+	str_copy(dst, src, cursor < dst_size ? cursor + 1 : dst_size);
 }
 
 void str_utf8_stats(const char *str, size_t max_size, size_t max_count, size_t *size, size_t *count)

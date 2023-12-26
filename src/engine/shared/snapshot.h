@@ -58,7 +58,7 @@ public:
 
 	unsigned Crc() const;
 	void DebugDump() const;
-	int TranslateSevenToSix(CSnapshot *pSixSnapDest, class CTranslationContext &TranslationContext, float LocalTime);
+	int TranslateSevenToSix(CSnapshot *pSixSnapDest, class CTranslationContext &TranslationContext, float LocalTime) const;
 	bool IsValid(size_t ActualSize) const;
 
 	static const CSnapshot *EmptySnapshot() { return &ms_EmptySnapshot; }

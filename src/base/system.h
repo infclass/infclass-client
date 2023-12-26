@@ -2373,7 +2373,6 @@ int str_utf8_encode(char *ptr, int chr);
 */
 int str_utf8_check(const char *str);
 
-
 /*
 	Function: str_utf8_copy_num
 		Copies a number of utf8 characters from one string to another.
